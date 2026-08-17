@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -118,8 +119,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-RAZORPAY_KEY_ID = "rzp_test_S9IY7NJyvbVTNu"
-RAZORPAY_KEY_SECRET = "GwdK5wrmOhLGCACZu86zpZ31"
+# RAZORPAY_KEY_ID = "rzp_test_S9IY7NJyvbVTNu"
+# RAZORPAY_KEY_SECRET = "GwdK5wrmOhLGCACZu86zpZ31"
 
 
 
@@ -143,16 +144,44 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
 
 
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'royalrentalsteam@gmail.com'
+
+# Paste the 16-character App Password here (no spaces)
+# EMAIL_HOST_PASSWORD = 'mbzagtqknbhgatxr'
+
+
+# TWILIO_ACCOUNT_SID = "ACc2c2e3f9af6e3480c4e90b68063e3c3d"
+# TWILIO_AUTH_TOKEN = "684122b1e9581d649c337c5551dca135"
+# TWILIO_PHONE_NUMBER = "+17752789885"
+
+
+# =========================
+# EMAIL CONFIGURATION
+# =========================
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'royalrentalsteam@gmail.com'
 
-# Paste the 16-character App Password here (no spaces)
-EMAIL_HOST_PASSWORD = 'mbzagtqknbhgatxr'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+# =========================
+# TWILIO CONFIGURATION
+# =========================
+
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
 
 
-TWILIO_ACCOUNT_SID = "ACc2c2e3f9af6e3480c4e90b68063e3c3d"
-TWILIO_AUTH_TOKEN = "684122b1e9581d649c337c5551dca135"
-TWILIO_PHONE_NUMBER = "+17752789885"
+# =========================
+# RAZORPAY CONFIGURATION
+# =========================
+
+RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID')
+RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
