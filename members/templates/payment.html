@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Payment - CarBook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+
+    <!-- Template Styles -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #393a3b;
+        }
+
+        .payment-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            max-width: 950px;
+            margin: 40px auto;
+        }
+
+        .car-img {
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .payment-method-box {
+            background: #eef5ff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .total-amount {
+            font-size: 22px;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        .btn-confirm {
+            border-radius: 10px;
+            width: 100%;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">Zoom<span>Wheels</span></a>
+
+        <div class="collapse navbar-collapse show">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a href="{% url 'car_booking' car.id %}" class="btn btn-outline-light">
+    ← Back to Booking
+</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<br><br>
+
+<!-- CARD -->
+<div class="payment-card">
+
+    <div class="row">
+
+        <!-- LEFT : CAR IMAGE -->
+        <div class="col-md-6">
+            <img src="{{ car.image.url }}" class="car-img" alt="{{ car.name }}">
+        </div>
+
+        <!-- RIGHT : CAR DETAILS -->
+        <div class="col-md-6">
+            <h3 class="mt-3">{{ car.name }}</h3>
+            <p><b>Brand:</b> {{ car.brand }}</p>
+            <p><b>Category:</b> {{ car.get_category_display }}</p>
+
+            <hr>
+
+            <!-- BOOKING DETAILS -->
+            <h4 class="section-title">Booking Details</h4>
+
+            <p><b>From:</b> {{ from_date }}</p>
+            <p><b>To:</b> {{ to_date }}</p>
+            <p><b>Price per day:</b> ₹{{ car.price_per_day }}</p>
+
+            <p class="total-amount">
+                Total Amount: ₹{{ total }}
+            </p>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <!-- PAYMENT FORM -->
+    <h4 class="section-title">Select Payment Method</h4>
+
+    <form method="POST" action="{% url 'confirm_payment' car.id %}">
+        {% csrf_token %}
+
+        <!-- Hidden fields for booking details -->
+        <input type="hidden" name="from_date" value="{{ from_date }}">
+        <input type="hidden" name="to_date" value="{{ to_date }}">
+        <input type="hidden" name="total" value="{{ total }}">
+
+        <div class="payment-method-box">
+            <label><input type="radio" name="payment_method" value="Google Pay" required> Google Pay</label> <br>
+            <label><input type="radio" name="payment_method" value="Credit Card" required> Credit Card</label> <br>
+            <label><input type="radio" name="payment_method" value="PhonePe" required> PhonePe</label>
+        </div>
+
+        <button class="btn btn-success btn-lg btn-confirm mt-4" type="submit">
+            Confirm Payment
+        </button>
+    </form>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="ftco-footer ftco-bg-dark ftco-section">
+  <div class="container">
+    <div class="row mb-5">
+
+      <div class="col-md">
+        <div class="ftco-footer-widget mb-4">
+          <h2 class="ftco-heading-2"><a href="#" class="logo">Zoom<span>Wheels</span></a></h2>
+          <p>Far far away, behind the word mountains...</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <p>
+          Copyright &copy;<script>document.write(new Date().getFullYear());</script>
+          All rights reserved | Template by Colorlib
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

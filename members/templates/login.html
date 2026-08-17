@@ -1,0 +1,261 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Login – Carbook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+
+    <style>
+        :root {
+            --primary: #1089ff;
+            --bg: #f4f6f9;
+            --text-dark: #111;
+            --text-muted: #666;
+            --border: #e2e6ea;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Back Button */
+        .back-btn {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            background: #fff;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .back-btn:hover {
+            color: var(--primary);
+            transform: translateX(-2px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+        }
+
+        /* Card */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            padding: 42px 38px;
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+            animation: fadeUp 0.45s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-card h2 {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .login-card .subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 34px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            height: 48px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            padding: 0 14px;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16,137,255,0.15);
+        }
+
+        /* Password field */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 70%;
+            transform: translateY(-50%);
+            border: none;
+            background: #f1f3f6;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #444;
+            transition: 0.2s;
+        }
+
+        .toggle-password{
+  outline: none;
+}
+
+.toggle-password:focus{
+  outline: none;
+  box-shadow: none;
+}
+
+        .toggle-password:hover {
+            background: #e6e9ee;
+        }
+
+        /* Button */
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            height: 48px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-primary:hover {
+            background: #0b6ad1;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(16,137,255,0.35);
+        }
+
+        .alert-danger {
+            font-size: 14px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .footer-text {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 24px;
+            color: var(--text-muted);
+        }
+
+        .footer-text a {
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<a href="{% url 'index'%}" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back
+</a>
+
+<div class="login-card">
+    <h2>Welcome Back</h2>
+    <div class="subtitle">Sign in to continue</div>
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} text-center">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label>Username</label>
+            <input type="text" class="form-control" name="username" required>
+        </div>
+
+        <div class="mb-4 password-wrapper">
+            <label>Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+            <button type="button" class="toggle-password" id="togglePassword">
+    <i class="fa-solid fa-eye"></i>
+</button>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">
+            Login
+        </button>
+    </form>
+
+
+
+<div class="text-center mt-3">
+    <a href="{% url 'forgot_password' %}" style="font-size:14px;">
+        Forgot your password?
+    </a>
+</div>
+
+    <div class="footer-text">
+        Don’t have an account?
+        <a href="{% url 'register' %}">Create one</a>
+    </div>
+</div>
+
+<script>
+    const toggleBtn = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+    const icon = toggleBtn.querySelector("i");
+
+    toggleBtn.addEventListener("click", function () {
+        const isPassword = passwordInput.type === "password";
+        passwordInput.type = isPassword ? "text" : "password";
+
+        // Toggle icon
+        icon.classList.toggle("fa-eye");
+        icon.classList.toggle("fa-eye-slash");
+    });
+
+
+    
+</script>
+
+
+</body>
+</html>

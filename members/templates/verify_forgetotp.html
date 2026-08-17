@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Verify OTP – Carbook</title>
+    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+    <style>
+        /* Reuse same CSS from forgot_password.html */
+        :root { --primary: #1089ff; --bg: #f4f6f9; }
+        body { min-height: 100vh; font-family: 'Poppins', sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+        .login-card { width: 100%; max-width: 420px; background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
+        .form-control { height: 48px; border-radius: 12px; text-align: center; letter-spacing: 4px; font-size: 18px; }
+        .btn-primary { background: var(--primary); border: none; height: 48px; border-radius: 12px; width: 100%; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <h2 class="text-center mb-2">Verify OTP</h2>
+    <div class="text-center text-muted mb-4" style="font-size: 14px;">
+        Code sent to <strong>{{ request.session.reset_email }}</strong>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} text-center">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            <input type="text" class="form-control" name="otp" maxlength="6" required placeholder="______">
+        </div>
+        <button type="submit" class="btn btn-primary">Verify & Proceed</button>
+    </form>
+</div>
+
+</body>
+</html>

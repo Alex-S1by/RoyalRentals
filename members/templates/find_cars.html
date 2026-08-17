@@ -1,0 +1,1080 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Find Cars | Royal Rentals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="{% static 'assets/css/header.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      :root {
+        --primary: #fbbc04;
+        --bg: #f6f7f9;
+        --border: #e5e7eb;
+        --muted: #6b7280;
+        --dark: #111827;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: var(--bg);
+      }
+
+      /* ---------- LAYOUT ---------- */
+      .page {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 24px;
+        padding: 24px;
+      }
+
+      /* ---------- FILTERS ---------- */
+      .filters {
+        background: #fff;
+        border-radius: 18px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        position: sticky;
+        top: 24px;
+        height: calc(100vh - 48px);
+        overflow-y: auto;
+      }
+
+      .filter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .filter-header h3 {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      /* ❌ hidden on desktop */
+      .filter-header button {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+      }
+
+      .filter-block {
+        margin-bottom: 18px;
+      }
+
+      .filter-block label {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        display: block;
+      }
+
+      .filter-block input {
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      /* ---------- AUTOCOMPLETE ---------- */
+      .autocomplete {
+        position: relative;
+      }
+
+      .suggestions {
+        position: absolute;
+        top: 110%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        border: 1px solid var(--border);
+        display: none;
+        z-index: 999;
+      }
+
+      .suggestions div {
+        padding: 12px 14px;
+        cursor: pointer;
+      }
+
+      .suggestions div:hover {
+        background: #f1f5f9;
+      }
+
+      /* ---------- BUTTON ---------- */
+      .apply-btn {
+        background: var(--primary);
+        border: none;
+        width: 100%;
+        padding: 15px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 15px;
+        cursor: pointer;
+      }
+
+      /* ---------- MAIN ---------- */
+      .main {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sort-bar {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 18px;
+        font-weight: 600;
+      }
+
+      /* ---------- MOBILE FILTER ---------- */
+      .mobile-filter-btn {
+        display: none;
+        background: #fff;
+        border: 1px solid var(--border);
+        padding: 12px 18px;
+        border-radius: 14px;
+        font-weight: 700;
+        margin-bottom: 14px;
+      }
+
+      .filter-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 998;
+      }
+
+      /* ---------- CAR LIST ---------- */
+      .grid {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .car-row {
+        display: grid;
+        grid-template-columns: 220px 1fr 220px;
+        gap: 24px;
+        background: #fff;
+        border-radius: 22px;
+        padding: 22px;
+        border: 1px solid var(--border);
+        align-items: center;
+        transition: 0.25s ease;
+      }
+
+      .car-image img {
+        width: 100%;
+        height: 140px;
+        object-fit: contain;
+        border-radius: 12px;
+      }
+
+      .car-info h3 {
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .car-tag {
+        font-size: 12px;
+        padding: 4px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        display: inline-block;
+        margin: 8px 0;
+      }
+
+      .car-meta {
+        display: flex;
+        gap: 14px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .car-features {
+        list-style: none;
+        margin: 10px 0;
+      }
+
+      .car-features li {
+        color: #059669;
+        font-size: 14px;
+      }
+
+      .car-price {
+        text-align: right;
+      }
+
+      .car-price .price {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 22px;
+      }
+
+      .select-btn {
+        background: var(--primary);
+        border: none;
+        padding: 10px 26px;
+        border-radius: 999px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.2s ease;
+        text-decoration: none;
+        color: #111827;
+      }
+
+      .select-btn:hover {
+        background: #f9b800;
+        transform: scale(1.05);
+      }
+
+      .availability {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 999px;
+        display: inline-block;
+        margin: 6px 0;
+      }
+
+      .availability.available {
+        background: #ecfdf5;
+        color: #065f46;
+      }
+
+      .availability.booked {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .select-btn.disabled {
+        background: #e5e7eb;
+        color: #9ca3af;
+        cursor: not-allowed;
+      }
+
+      .error-tag {
+        background: #fee2e2;
+        color: #991b1b;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 10px 14px;
+        border-radius: 14px;
+        margin: 12px 0;
+        display: none;
+      }
+
+      /* ---------- RESPONSIVE ---------- */
+      @media (max-width: 900px) {
+        .page {
+          grid-template-columns: 1fr;
+          padding: 16px;
+        }
+
+        .filters {
+          position: fixed;
+          top: 0;
+          left: -100%;
+          width: 85%;
+          max-width: 340px;
+          height: 100vh;
+          z-index: 999;
+          border-radius: 0;
+          transition: left 0.3s ease;
+        }
+
+        .filters.open {
+          left: 0;
+          margin-top: 60px;
+        }
+
+        .filter-overlay.show {
+          display: block;
+        }
+
+        .mobile-filter-btn {
+          display: block;
+        }
+
+        .filter-header button {
+          display: block;
+        }
+
+        .car-row {
+          grid-template-columns: 1fr;
+        }
+
+        .car-price {
+          text-align: left;
+        }
+      }
+
+      .django-error {
+        background: #fee2e2;
+        color: #991b1b;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 12px 16px;
+        border-radius: 14px;
+        margin-bottom: 14px;
+        border: 1px solid #fecaca;
+      }
+
+
+      .car-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.favourite-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.favourite-btn i {
+  font-size: 16px;
+  color: #9ca3af;
+}
+
+.favourite-btn.favourited {
+  background: #ffffff;
+  border-color: #f52525;
+}
+
+.favourite-btn.favourited i {
+  color: #f91010;
+}
+
+.select-btn {
+  background: var(--primary);
+  border: none;
+  padding: 10px 26px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  color: #111827;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.select-btn.disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+
+/* Add to your existing <style> block */
+
+/* Sort Bar styling updates */
+.sort-bar span {
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.sort-bar span:hover {
+    background: #e5e7eb;
+}
+
+.sort-bar span.active {
+    background: var(--dark);
+    color: #fff;
+}
+
+/* No Results State */
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: 22px;
+    border: 1px dashed var(--border);
+    color: var(--muted);
+    grid-column: 1 / -1; /* Spans full width */
+}
+
+.no-results i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: #d1d5db;
+}
+
+.no-results h3 {
+    font-size: 20px;
+    color: var(--dark);
+    margin-bottom: 8px;
+}
+      
+    </style>
+  </head>
+
+  <body>
+    {% include "includes/header.html" %}
+
+    <div class="filter-overlay" id="filterOverlay"></div>
+
+    <div class="page">
+      <!-- FILTERS -->
+      <aside class="filters">
+        <div class="filter-header">
+          <h3>Filter</h3>
+          <button type="button" id="closeFilters">✕</button>
+        </div>
+
+        <form method="get">
+          <div class="filter-block">
+            <label>Pickup date</label>
+            <input
+          
+              id="pickup_date"
+              name="pickup_date"
+              value="{{ request.GET.pickup_date }}"
+            />
+          </div>
+
+          <div class="filter-block">
+            <label>Pickup time</label>
+            <input
+              id="pickup_time"
+              name="pickup_time"
+              value="{{ request.GET.pickup_time }}"
+            />
+          </div>
+
+          <div class="filter-block">
+            <label>Dropoff date</label>
+            <input
+              id="drop_date"
+              name="drop_date"
+              value="{{ request.GET.drop_date }}"
+            />
+          </div>
+
+          <div class="filter-block">
+            <label>Dropoff time</label>
+            <input
+              id="drop_time"
+              name="drop_time"
+              value="{{ request.GET.drop_time }}"
+            />
+          </div>
+
+          <div class="filter-block autocomplete">
+            <label>Car name</label>
+            <input
+              id="name-input"
+              name="name"
+              value="{{ request.GET.name }}"
+              autocomplete="off"
+            />
+            <div class="suggestions" id="name-suggestions"></div>
+          </div>
+
+          <div class="filter-block autocomplete">
+            <label>Pickup Location</label>
+
+            <input
+              id="location-input"
+              name="pickup"
+              value="{{ request.GET.pickup }}"
+              autocomplete="off"
+            />
+
+            
+
+            <div class="suggestions" id="location-suggestions"></div>
+          </div>
+
+          <div class="filter-block autocomplete">
+            <label>Drop Location</label>
+
+            <input
+              id="location-input2"
+              name="drop"
+              value="{{ request.GET.drop }}"
+              autocomplete="off"
+            />
+
+            <div class="suggestions" id="location-suggestions"></div>
+          </div>
+          <div class="error-tag" id="booking-error">
+            Please select pickup & drop date, time, and location before booking
+          </div>
+
+          <div class="error-tag" id="booking-error2">
+           
+          </div>
+          <div class="error-tag" id="booking-error3"> </div>
+          <div class="error-tag"  id="booking-error-time"></div>
+            
+         
+
+          {% if messages %}
+          {% for message in messages %} 
+          {% if message.tags == "error" %}
+          <div class="django-error" id="backend-error">{{ message }}</div>
+          {% endif %}
+          {% endfor %} 
+          {% endif %}
+
+          <button class="apply-btn">Apply Filter</button>
+        </form>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <button class="mobile-filter-btn" id="openFilters">☰ Filters</button>
+
+        <div class="sort-bar">
+  <span id="sort-relevance" class="active">Relevance</span>
+  <span id="sort-price-asc">Price ↑</span>
+  <span id="sort-price-desc">Price ↓</span>
+</div>
+
+<div class="grid" id="carGrid">
+  {% for item in car_data %} 
+  {% with car=item.car %}
+  <div class="car-row" data-index="{{ forloop.counter0 }}">
+    <div class="car-image">
+      <img src="{{ car.image.url }}" />
+    </div>
+
+    <div class="car-info">
+      <h3>{{ car.name }}</h3>
+
+      {% if item.is_time_available %}
+      <span class="availability available">Available</span>
+      {% else %}
+      <span class="availability booked">Booked for selected time</span>
+      {% endif %}
+      <span class="availability available">
+        <i class="fa-solid fa-location-dot"></i>
+        {{car.place}}</span>
+
+      <div class="car-meta">
+        <span><i class="fa-solid fa-person"></i> {{ car.seats }}</span>
+        <span><i class="fa-solid fa-gear"></i> {{ car.transmission }}</span>
+        <span><i class="fa-solid fa-fan"></i> A/C</span>
+      </div>
+    </div>
+
+    <div class="car-price">
+      <div class="price">₹ {{ car.price_per_hour }} / hour</div>
+      <div class="car-actions">
+        <button
+          type="button"
+          class="favourite-btn {% if item.is_fav %}favourited{% endif %}"
+          data-car-id="{{ car.id }}"
+        >
+          <i class="fa-{% if item.is_fav %}solid{% else %}regular{% endif %} fa-heart"></i>
+        </button>
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+        {% if item.is_time_available %}
+        <a href="{% url 'checkout' car.id %}?{{ request.GET.urlencode }}" class="select-btn book-now" data-car-place="{{ car.place }}">
+          Book now
+        </a>
+        {% else %}
+        <button class="select-btn disabled" disabled>Unavailable</button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endwith %} 
+  
+  {% empty %}
+  <div class="no-results">
+    <i class="fa-solid fa-magnifying-glass-location"></i>
+    <h3>No cars found</h3>
+    <p>We couldn't find any cars matching your criteria.</p>
+    <p style="font-size: 14px; margin-top: 5px;">Try changing your <strong>dates</strong> or <strong>pickup location</strong>.</p>
+  </div>
+  {% endfor %}
+</div>
+      </main>
+    </div>
+
+    <script src="{% static 'assets/js/header.js' %}"></script>
+    <script>
+
+       
+
+
+      function openFiltersMobile() {
+        const filters = document.querySelector(".filters");
+        const overlay = document.getElementById("filterOverlay");
+
+        filters.classList.add("open");
+        overlay.classList.add("show");
+      }
+
+
+
+
+document.querySelectorAll(".book-now").forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+
+    const requiredIds = [
+      "pickup_date",
+      "pickup_time",
+      "drop_date",
+      "drop_time",
+      "location-input",
+      "location-input2",
+    ];
+
+    const pickupInput = document.getElementById("location-input");
+    const dropInput = document.getElementById("location-input2");
+
+    const pickup = pickupInput?.value.trim().toLowerCase() || "";
+    const drop = dropInput?.value.trim().toLowerCase() || "";
+    const carPlace = this.dataset.carPlace?.trim().toLowerCase() || "";
+
+    // ---------- REQUIRED FIELDS CHECK ----------
+    const missing = requiredIds.some((id) => {
+      const el = document.getElementById(id);
+      return !el || !el.value.trim();
+    });
+
+    if (missing) {
+      e.preventDefault();
+
+      const errorBox = document.getElementById("booking-error");
+      errorBox.style.display = "block";
+      errorBox.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      if (window.innerWidth <= 900) {
+        openFiltersMobile();
+      }
+      return;
+    }
+
+    // ---------- TIME VALIDATION ----------
+    const pickupDate = document.getElementById("pickup_date").value;
+    const pickupTime = document.getElementById("pickup_time").value;
+    const dropDate = document.getElementById("drop_date").value;
+    const dropTime = document.getElementById("drop_time").value;
+
+
+
+    function toDate(dateStr, timeStr) {
+  if (!dateStr || !timeStr) return null;
+
+  const [day, month, year] = dateStr.split(" ");
+
+  let [time, meridian] = timeStr.split(" ");
+  let [hours, minutes] = time.split(":").map(Number);
+
+  const monthIndex = new Date(`${month} 1, 2000`).getMonth();
+
+  if (meridian === "PM" && hours !== 12) hours += 12;
+  if (meridian === "AM" && hours === 12) hours = 0;
+
+  return new Date(year, monthIndex, day, hours, minutes);
+}
+
+
+    const pickupDateTime = toDate(pickupDate, pickupTime);
+    const dropDateTime = toDate(dropDate, dropTime);
+    
+
+
+
+    
+    
+
+    if (dropDateTime <= pickupDateTime) {
+      e.preventDefault();
+
+      const errorBox = document.getElementById("booking-error-time");
+      errorBox.textContent = "Drop time cannot be the same or earlier than pickup time";
+      errorBox.style.display = "block";
+      errorBox.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      if (window.innerWidth <= 900) {
+        openFiltersMobile();
+      }
+      return;
+    }
+
+    // ---------- PICKUP LOCATION VALIDATION ----------
+    if (pickup !== carPlace) {
+      e.preventDefault();
+
+      const errorBox1 = document.getElementById("booking-error2");
+      errorBox1.textContent =
+        "This car is not available at the selected pickup location.";
+      errorBox1.style.display = "block";
+      errorBox1.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      if (window.innerWidth <= 900) {
+        openFiltersMobile();
+      }
+      return;
+    }
+
+    // ---------- DROP LOCATION VALIDATION ----------
+    if (drop !== carPlace) {
+      e.preventDefault();
+
+      const errorBox2 = document.getElementById("booking-error3");
+      errorBox2.textContent =
+        "This car is not available at the selected drop location.";
+      errorBox2.style.display = "block";
+      errorBox2.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      if (window.innerWidth <= 900) {
+        openFiltersMobile();
+      }
+      return;
+    }
+
+  });
+});
+
+     
+     
+      function getNextHourSlot() {
+        const now = new Date();
+
+        // Move to next hour
+        now.setHours(now.getHours() + 1);
+        now.setMinutes(0, 0, 0);
+
+        return now.toTimeString().slice(0, 5); // "HH:MM"
+      }
+
+      const pickupTimePicker = flatpickr("#pickup_time", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "h:i K",
+        minuteIncrement: 60,
+        maxTime: "23:00",
+        disableMobile: true,
+      });
+      flatpickr("#pickup_date", {
+        dateFormat: "d M Y",
+        minDate: "today",
+        onChange: function (selectedDates) {
+          const selected = selectedDates[0];
+          const today = new Date();
+
+          let minTime;
+
+          if (selected.toDateString() === today.toDateString()) {
+            minTime = getNextHourSlot(); // 🔥 CURRENT NEXT SLOT
+          } else {
+            minTime = "06:00"; // opening time
+          }
+
+          pickupTimePicker.set("minTime", minTime);
+          pickupTimePicker.setDate(minTime, true); // ✅ force valid time
+        },
+      });
+
+      const dropTimePicker = flatpickr("#drop_time", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "h:i K",
+        minuteIncrement: 60,
+        maxTime: "23:00",
+        disableMobile: true,
+      });
+
+      flatpickr("#drop_date", {
+        dateFormat: "d M Y",
+        minDate: "today",
+        onChange: function (selectedDates) {
+          const selected = selectedDates[0];
+          const today = new Date();
+
+          let minTime;
+
+          if (selected.toDateString() === today.toDateString()) {
+            minTime = getNextHourSlot(); // 🔥 CURRENT NEXT SLOT
+          } else {
+            minTime = "06:00"; // opening time
+          }
+
+          dropTimePicker.set("minTime", minTime);
+          dropTimePicker.setDate(minTime, true); // ✅ force valid time
+        },
+      });
+
+      document.getElementById("pickup_time").addEventListener("change", () => {
+        const pickupTime = pickupTimePicker.input.value;
+
+        if (pickupTime) {
+          dropTimePicker.set("minTime", pickupTime);
+          dropTimePicker.setDate(pickupTime, true);
+        }
+      });
+
+      const filters = document.querySelector(".filters");
+      document.getElementById("openFilters").onclick = () => {
+        filters.classList.add("open");
+        document.getElementById("filterOverlay").classList.add("show");
+      };
+      document.getElementById("closeFilters").onclick = () => {
+        filters.classList.remove("open");
+        document.getElementById("filterOverlay").classList.remove("show");
+      };
+      document.getElementById("filterOverlay").onclick = () => {
+        filters.classList.remove("open");
+        document.getElementById("filterOverlay").classList.remove("show");
+      };
+
+      function setuplocAutocomplete(inputId) {
+        const input = document.getElementById(inputId);
+        const box = input
+          .closest(".autocomplete")
+          .querySelector(".suggestions");
+
+        input.addEventListener("input", async () => {
+          const query = input.value.trim();
+          box.innerHTML = "";
+
+          if (!query) {
+            box.style.display = "none";
+            return;
+          }
+
+          const res = await fetch(`/api/locations/?q=${query}`);
+          const data = await res.json();
+
+          if (data.results.length === 0) {
+            box.innerHTML = `<div class="no-result">Not serviceable location</div>`;
+            box.style.display = "block";
+            return;
+          }
+
+          data.results.forEach((place) => {
+            const div = document.createElement("div");
+            div.textContent = place;
+            div.onclick = () => {
+              input.value = place;
+              box.style.display = "none";
+            };
+            box.appendChild(div);
+          });
+
+          box.style.display = "block";
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!input.contains(e.target)) {
+            box.style.display = "none";
+          }
+        });
+      }
+
+      function setupCarnameAutocomplete(inputId) {
+        const input = document.getElementById(inputId);
+        const box = input
+          .closest(".autocomplete")
+          .querySelector(".suggestions");
+
+        input.addEventListener("input", async () => {
+          const query = input.value.trim();
+          box.innerHTML = "";
+
+          if (!query) {
+            box.style.display = "none";
+            return;
+          }
+
+          try {
+            const res = await fetch(
+              `/name-suggestions/?q=${encodeURIComponent(query)}`,
+            );
+            const data = await res.json();
+
+            if (!data.results || data.results.length === 0) {
+              box.innerHTML = `<div class="no-result">No cars found</div>`;
+              box.style.display = "block";
+              return;
+            }
+
+            data.results.forEach((carName) => {
+              const div = document.createElement("div");
+              div.textContent = carName;
+              div.onclick = () => {
+                input.value = carName;
+                box.style.display = "none";
+              };
+              box.appendChild(div);
+            });
+
+            box.style.display = "block";
+          } catch (err) {
+            console.error("Car name autocomplete error:", err);
+            box.style.display = "none";
+          }
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!input.contains(e.target)) {
+            box.style.display = "none";
+          }
+        });
+      }
+
+      setuplocAutocomplete("location-input");
+      setuplocAutocomplete("location-input2");
+      setupCarnameAutocomplete("name-input");
+
+      const errorBox2 = document.getElementById("backend-error");
+      if (errorBox2) {
+        if (window.innerWidth <= 900) {
+          openFiltersMobile();
+        }
+      }
+
+
+// filepath: c:\Users\Alex\Desktop\car-rental\car\my_car\members\templates\find_cars.html
+// ...existing code...
+
+// filepath: c:\Users\Alex\Desktop\car-rental\car\my_car\members\templates\find_cars.html
+// ...existing code...
+
+document.querySelectorAll(".favourite-btn").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const carId = btn.dataset.carId;
+    const csrf = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+    // Disable button during request
+    btn.disabled = true;
+    btn.style.opacity = 0.5;
+
+    try {
+      const res = await fetch(`/toggle-favourite/${carId}/`, {  // Adjust URL if namespaced, e.g., '/members/toggle-favourite/${carId}/'
+        method: "POST",
+        headers: { "X-CSRFToken": csrf }
+      });
+
+      if (!res.ok) {
+        console.error("Error:", res.status, res.statusText);
+        alert("Failed to update favourite. Please try again.");
+        return;
+      }
+
+      const data = await res.json();
+      btn.classList.toggle("favourited", data.status === "added");
+      btn.innerHTML = `<i class="fa-${data.status === "added" ? "solid" : "regular"} fa-heart"></i>`;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      alert("Network error. Check console.");
+    } finally {
+      // Re-enable button
+      btn.disabled = false;
+      btn.style.opacity = 1;
+    }
+  });
+});
+
+// ...existing code...
+// ...existing code...
+
+
+/* ---------- SORTING LOGIC ---------- */
+document.addEventListener("DOMContentLoaded", () => {
+    const grid = document.getElementById("carGrid");
+    // Get all car rows (converts NodeList to Array for sorting)
+    const cars = Array.from(grid.getElementsByClassName("car-row"));
+    
+    // If no cars (empty state), stop script
+    if (cars.length === 0) return;
+
+    const btnRel = document.getElementById("sort-relevance");
+    const btnAsc = document.getElementById("sort-price-asc");
+    const btnDesc = document.getElementById("sort-price-desc");
+
+    // Helper: Extract price integer from string "₹ 500 / hour"
+    const getPrice = (row) => {
+        const priceText = row.querySelector(".price").innerText;
+        // Removes all non-numeric characters and parses int
+        return parseInt(priceText.replace(/[^\d]/g, ""));
+    };
+
+    // Helper: Update UI active state
+    const setActive = (btn) => {
+        [btnRel, btnAsc, btnDesc].forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+    };
+
+    // 1. Sort by Relevance (Original Index)
+    btnRel.addEventListener("click", () => {
+        setActive(btnRel);
+        cars.sort((a, b) => {
+            return a.dataset.index - b.dataset.index;
+        });
+        // Re-append to DOM in new order
+        cars.forEach(car => grid.appendChild(car));
+    });
+
+    // 2. Sort Price Low to High
+    btnAsc.addEventListener("click", () => {
+        setActive(btnAsc);
+        cars.sort((a, b) => {
+            return getPrice(a) - getPrice(b);
+        });
+        cars.forEach(car => grid.appendChild(car));
+    });
+
+    // 3. Sort Price High to Low
+    btnDesc.addEventListener("click", () => {
+        setActive(btnDesc);
+        cars.sort((a, b) => {
+            return getPrice(b) - getPrice(a);
+        });
+        cars.forEach(car => grid.appendChild(car));
+    });
+});
+
+
+  </script>
+  </body>
+</html>

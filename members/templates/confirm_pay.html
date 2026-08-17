@@ -1,0 +1,250 @@
+  {% load static %}
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Confirm & Pay | Royal Rentals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Razorpay -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+  *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+  }
+
+  body{
+    background:linear-gradient(180deg,#f5f6f8,#eef1f5);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+
+  /* CARD */
+  .confirm-card{
+    background:#fff;
+    width:100%;
+    max-width:420px;
+    border-radius:26px;
+    padding:28px;
+    box-shadow:0 30px 70px rgba(0,0,0,.15);
+  }
+
+  /* HEADER */
+  .confirm-title{
+    text-align:center;
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:26px;
+  }
+
+  /* VEHICLE */
+  .vehicle{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    margin-bottom:24px;
+  }
+
+  .vehicle img{
+    width:90px;
+    height:60px;
+    object-fit:contain;
+    background:#f3f4f6;
+    border-radius:12px;
+    padding:6px;
+  }
+
+  .vehicle h3{
+    font-size:18px;
+    font-weight:700;
+  }
+
+  .vehicle span{
+    font-size:13px;
+    color:#6b7280;
+  }
+
+  /* DETAILS */
+  .details{
+    border-top:1px solid #e5e7eb;
+    border-bottom:1px solid #e5e7eb;
+    padding:18px 0;
+    margin-bottom:22px;
+  }
+
+  .detail-row{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:12px;
+    font-size:14px;
+  }
+
+  .detail-row span{
+    color:#6b7280;
+  }
+
+  .detail-row strong{
+    color:#111;
+    font-weight:600;
+  }
+
+  /* PRICE */
+  .price{
+    text-align:center;
+    margin-bottom:24px;
+  }
+
+  .price span{
+    font-size:13px;
+    color:#6b7280;
+  }
+
+  .price h2{
+    font-size:36px;
+    font-weight:800;
+    margin:6px 0;
+  }
+
+  .price small{
+    font-size:14px;
+    color:#6b7280;
+  }
+
+  /* BUTTON */
+  .pay-btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:999px;
+    background:linear-gradient(135deg,#000,#222);
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s ease;
+  }
+
+  .pay-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 12px 25px rgba(0,0,0,.3);
+  }
+
+  /* SECURITY */
+  .secure{
+    margin-top:12px;
+    text-align:center;
+    font-size:13px;
+    color:#6b7280;
+  }
+  </style>
+  </head>
+
+  <body>
+
+  <div class="confirm-card">
+
+    <h2 class="confirm-title">Confirm & Pay</h2>
+
+    <!-- VEHICLE -->
+    <div class="vehicle">
+      <img src="{{ car.image.url }}" alt="{{ car.name }}">
+      <div>
+        <h3>{{ car.name }}</h3>
+        <span>{{ car.place }}</span>
+      </div>
+    </div>
+
+    <!-- DETAILS -->
+    <div class="details">
+      <div class="detail-row">
+        <span>Pickup</span>
+        <strong>{{ pickup }}</strong>
+      </div>
+      <div class="detail-row">
+        <span>Drop</span>
+        <strong>{{ drop }}</strong>
+      </div>
+      <div class="detail-row">
+        <span>Duration</span>
+        <strong>{{ total_hours }} hours</strong>
+      </div>
+    </div>
+
+    <!-- PRICE -->
+    <div class="price">
+      <span>Total amount</span>
+      <h2>₹ {{ total_price }}</h2>
+      <small>{{ total_hours }} hrs × ₹{{ car.price_per_hour }}/hour</small>
+    </div>
+{% if not order %}
+      <form method="POST" action=""> 
+        {% csrf_token %}
+        <button type="submit" class="pay-btn">
+          Confirm & Pay
+        </button>
+      </form>
+    {% else %}
+      <button id="rzp-btn" class="pay-btn">
+        Pay Now
+      </button>
+    {% endif %}
+
+    <div class="secure">
+      <i class="fa-solid fa-lock"></i> Secure payment by Razorpay
+    </div>
+
+  </div>
+
+  {% if order %}
+ <script>
+ 
+  const rzp = new Razorpay({
+    key: "{{ razorpay_key }}",
+    amount: "{{ order.amount }}",
+    currency: "INR",
+    name: "Royal Rentals",
+    description: "Car Booking",
+    order_id: "{{ order.id }}",
+    
+    // ✅ NEW: This forces the Redirect flow (Fixes about:blank)
+    callback_url: "{{ request.scheme }}://{{ request.get_host }}{% url 'payment_success' %}",
+    redirect: true,
+
+    // ❌ DELETE the 'handler' function entirely. 
+    // The callback_url handles the response automatically.
+    
+    prefill: {
+        // Optional: Pre-fill user details if you have them
+        // email: "{{ request.user.email }}", 
+        // contact: "{{ request.user.phone }}" 
+    },
+    
+    theme: {
+        "color": "#000000"
+    }
+  });
+
+  document.getElementById("rzp-btn").onclick = function (e) {
+    e.preventDefault(); // Stop form submission
+    rzp.open();
+  };
+  
+</script>
+  {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ car.name }} Management | RoyalRentals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #eef2ff;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #f1f5f9;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Plus Jakarta Sans", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body { 
+            background: var(--bg); 
+            color: var(--text-main);
+            margin: 0; 
+            padding: 40px; 
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .page-header { 
+            display: flex; 
+            justify-content: space-between;
+            align-items: center; 
+            margin-bottom: 32px; 
+        }
+
+        .back-btn { 
+            text-decoration: none; 
+            color: var(--text-muted); 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover { color: var(--primary); }
+        
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: 380px 1fr; 
+            gap: 32px; 
+            align-items: start;
+        }
+
+        /* CAR INFO CARD */
+        .car-info-card { 
+            background: #fff; 
+            border-radius: var(--radius); 
+            border: 1px solid var(--border); 
+            overflow: hidden; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 40px;
+        }
+
+        .car-img { 
+            width: 100%; 
+            height: 240px; 
+            object-fit: cover; 
+        }
+
+        .car-details { padding: 30px; }
+        .car-details h2 { margin: 0 0 15px 0; font-size: 24px; font-weight: 800; }
+        
+        .detail-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 12px 0; 
+            border-bottom: 1px solid var(--border); 
+            font-size: 14px; 
+        }
+
+        .detail-row span { color: var(--text-muted); font-weight: 500; }
+        .detail-row strong { color: var(--text-main); }
+        
+        /* BOOKING CARDS */
+        .main-content { display: flex; flex-direction: column; gap: 24px; }
+
+        .booking-card { 
+            background: #fff; 
+            border-radius: var(--radius); 
+            padding: 30px; 
+            border: 1px solid var(--border); 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .booking-card h3 { 
+            margin: 0 0 20px 0; 
+            font-size: 18px; 
+            font-weight: 800; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
+
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+        
+        .btn { 
+            padding: 12px 24px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            text-decoration: none; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 14px; 
+            transition: all 0.3s ease; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .btn-success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .btn-success:hover { background: #15803d; color: #fff; }
+
+        .btn-alert { background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; }
+        .btn-alert:hover { background: #b45309; color: #fff; }
+
+        .btn-view { background: var(--bg); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-view:hover { background: var(--text-main); color: #fff; }
+
+        .pill {
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .pill-success { background: #dcfce7; color: #15803d; }
+        .pill-danger { background: #fee2e2; color: #b91c1c; }
+
+        /* REVIEW SECTION */
+        .review-list { display: grid; gap: 16px; margin-top: 10px; }
+        .review-item { 
+            padding: 20px; 
+            border-radius: 16px; 
+            background: var(--bg); 
+            border: 1px solid var(--border); 
+        }
+        .star-row { color: #fbbf24; margin-bottom: 8px; font-size: 14px; letter-spacing: 2px; }
+        
+        .review-comment { font-style: italic; color: var(--text-main); line-height: 1.6; margin: 10px 0; }
+        .reviewer { font-size: 13px; color: var(--text-muted); font-weight: 600; display: block; }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="page-header">
+            <a  href="{% url 'owner_dashboard' %}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Fleet
+            </a>
+            <h1 style="font-weight: 800; font-size: 28px; margin: 0; letter-spacing: -0.5px;">Vehicle Control</h1>
+        </div>
+
+        <div class="grid-container">
+            <div class="car-info-card">
+                <img src="{{ car.image.url }}" class="car-img" alt="{{ car.name }}">
+                <div class="car-details">
+                    <h2>{{ car.name }}</h2>
+                    <div class="detail-row"><span>Brand</span> <strong>{{ car.brand }}</strong></div>
+                    <div class="detail-row"><span>Model</span> <strong>{{ car.model }}</strong></div>
+                    <div class="detail-row"><span>Rate</span> <strong>₹ {{ car.price_per_hour }}/hr</strong></div>
+                    <div class="detail-row">
+                        <span>Status</span> 
+                        <span class="pill {% if car.available %}pill-success{% else %}pill-danger{% endif %}">
+                            {% if car.available %}Available{% else %}Maintenance{% endif %}
+                        </span>
+                    </div>
+                    
+                    <a href="{% url 'edit_car' car.id %}" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:25px;">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit Specifications
+                    </a>
+                </div>
+            </div>
+
+            <div class="main-content">
+                
+                <div class="booking-card" style="border-top: 5px solid var(--warning);">
+                    <h3><i class="fa-solid fa-route" style="color: var(--warning);"></i> Live Trip Management</h3>
+                    {% if current_booking %}
+                        <div style="background: var(--bg); padding: 20px; border-radius: 16px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <div>
+                                    <small style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px;">Renter</small>
+                                    <div style="font-weight: 800; font-size: 18px;">{{ current_booking.user.username }}</div>
+                                </div>
+                                {% if current_booking.want_driver %}
+                                <div>
+                                    <small style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px;">Renter</small>
+                                    <div style="font-weight: 800; font-size: 18px;">{{ current_booking.driver.username }}</div>
+                                </div>
+                                {% endif %}
+
+                                <div style="text-align: right;">
+                                    <small style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px;">Expected Return</small>
+                                   <div style="font-weight: 800; font-size: 18px; color: var(--danger);">
+    {{ current_booking.drop_datetime|date:"d M" }}, {{ current_booking.drop_datetime|date:"h:i A" }}
+</div>
+                                </div>
+                            </div>
+                            
+                            <div class="btn-group">
+                                <a href="{% url 'booking_action' current_booking.id 'drop_alert' %}" class="btn btn-alert">
+                                    <i class="fa-solid fa-paper-plane"></i> Send 10-Min Nudge
+                                </a>
+                                <a href="{% url 'booking_action' current_booking.id 'completed' %}" class="btn btn-success">
+                                    <i class="fa-solid fa-check-double"></i> Confirm Return
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fa-solid fa-circle-info" style="color: var(--text-muted); font-size: 24px; margin-bottom: 10px;"></i>
+                            <p style="color: var(--text-muted); font-weight: 500; margin: 0;">No active trip for this vehicle right now.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="booking-card" style="border-top: 5px solid var(--success);">
+                    <h3><i class="fa-solid fa-calendar-check" style="color: var(--success);"></i> Next Reservation</h3>
+                    {% if next_bookings %}
+                        {% with next_trip=next_bookings|first %}
+                        <div style="background: var(--bg); padding: 20px; border-radius: 16px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <div>
+                                    <small style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px;">Customer</small>
+                                    <div style="font-weight: 800; font-size: 18px;">{{ next_trip.user.username }}</div>
+                                </div>
+                                {% if next_trip.want_driver %}
+                                <div>
+                                    <small style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px;">Driver</small>
+                                    {% if next_trip.driver.name %}
+                                    <div style="font-weight: 800; font-size: 18px;">{{ next_trip.driver.name }}</div>
+                                    {%else%}
+                                     <div style="font-weight: 800; font-size: 18px;">Driver not assigned</div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                <div style="text-align: right;">
+                                    <small style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px;">Pickup Time</small>
+                                    <div style="font-weight: 800; font-size: 18px;">{{ next_trip.pickup_datetime|date:"d M, h:i A" }}</div>
+                                </div>
+                            </div>
+
+                            <div class="btn-group">
+                                {% if next_trip.status != "Ready for Pickup" %}
+                                <a href="{% url 'booking_action' next_trip.id 'ready' %}" class="btn btn-alert">
+                                    <i class="fa-solid fa-gas-pump"></i> Mark Prepared
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'booking_action' next_trip.id 'started' %}" class="btn btn-success">
+                                    <i class="fa-solid fa-key"></i> Start Handover
+                                </a>
+                            </div>
+                        </div>
+                        {% endwith %}
+                    {% else %}
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fa-solid fa-calendar-minus" style="color: var(--text-muted); font-size: 24px; margin-bottom: 10px;"></i>
+                            <p style="color: var(--text-muted); font-weight: 500; margin: 0;">No upcoming reservations scheduled.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="booking-card">
+                    <h3><i class="fa-solid fa-star" style="color: #fbbf24;"></i> Ratings & Feedback</h3>
+                    <div class="review-list">
+                        {% for review in reviews %}
+                        <div class="review-item">
+                            <div class="star-row">
+                                {% if review.rating == 5 %}★★★★★{% elif review.rating == 4 %}★★★★☆{% elif review.rating == 3 %}★★★☆☆{% elif review.rating == 2 %}★★☆☆☆{% else %}★☆☆☆☆{% endif %}
+                            </div>
+                            <div class="review-comment">"{{ review.comment }}"</div>
+                            <span class="reviewer">
+                                <i class="fa-solid fa-user-circle"></i> {{ review.user.username }} • {{ review.created_at|date:"d M Y" }}
+                            </span>
+                        </div>
+                        {% empty %}
+                        <div style="text-align: center; padding: 20px;">
+                            <p style="color: var(--text-muted); margin: 0;">This car hasn't been reviewed yet.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    icon: '{{ message.tags }}' === 'error' ? 'error' : ('{{ message.tags }}' === 'warning' ? 'warning' : 'success'),
+                    title: '{{ message.tags|capfirst }}',
+                    text: '{{ message }}',
+                    timer: 3500,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end',
+                    timerProgressBar: true,
+                    background: '#fff',
+                    color: '#1e293b'
+                });
+            {% endfor %}
+        {% endif %}
+    </script>
+</html>

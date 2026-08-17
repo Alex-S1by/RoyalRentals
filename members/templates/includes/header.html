@@ -1,0 +1,62 @@
+<!-- templates/includes/header.html -->
+{% load static %}
+
+<header class="header">
+    <div class="header-container">
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <a href="{% url 'index' %}" class="logo">
+            <div class="logo-text">
+                <span>ROYAL</span>
+                <span>RENTALS</span>
+            </div>
+        </a>
+
+        <nav>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="">About</a></li>
+                <li><a href="">Services</a></li>
+                <li><a href="">Pricing</a></li>
+                <li><a href="">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-right">
+          
+
+   
+</div>
+           <div class="auth-buttons">
+
+    {% if request.session.user_id %}
+     <a href="{% url 'profile' %}" class="btn btn-login">
+         
+         
+         <span >  <i class="fa-solid fa-user"> </i> </span>
+         {{  request.session.username|default:"User" }}
+        </a>
+        
+        <a href="{% url 'logout' %}" class="btn btn-login">
+            <i class="fa-solid fa-arrow-right-from-bracket"> </i>
+            Logout
+        </a>
+    {% else %}
+        <!-- Guest -->
+        <a href="{% url 'login' %}" class="btn btn-login">
+            Login
+        </a>
+        <a href="{% url 'register' %}" class="btn btn-signup">
+            Sign up
+        </a>
+    {% endif %}
+
+</div>
+
+        </div>
+    </div>
+</header>
+

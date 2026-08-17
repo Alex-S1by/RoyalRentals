@@ -1,0 +1,351 @@
+/* static/css/header.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* ================= HEADER ================= */
+
+.header {
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+   
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    gap: 20px;
+}
+
+/* ================= HAMBURGER ================= */
+/* Always visible */
+
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+    padding: 8px;
+    background: transparent;
+    border: none;
+    z-index: 1001;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* ================= LOGO ================= */
+
+.logo {
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    flex-shrink: 0;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 1px;
+}
+
+.logo-text span {
+    display: block;
+}
+
+.logo-text span:first-child {
+    color: #333;
+}
+
+.logo-text span:last-child {
+    color: #FFC107;
+    font-size: 20px;
+}
+
+/* ================= NAVIGATION (GLOBAL SIDEBAR) ================= */
+
+nav {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* GLOBAL SIDEBAR */
+.nav-menu {
+    position: fixed;
+    left: -280px;
+    top: 70px;
+    width: 280px;
+    height: calc(100vh - 70px);
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    list-style: none;
+    padding: 30px 0;
+    gap: 0;
+    overflow-y: auto;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+    z-index: 999;
+}
+
+/* Sidebar open */
+.nav-menu.active {
+    left: 0;
+}
+
+/* Sidebar items */
+.nav-menu li {
+    width: 100%;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Sidebar links */
+.nav-menu a {
+    width: 100%;
+    padding: 18px 30px;
+    display: block;
+    text-decoration: none;
+    color: #333;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.nav-menu a:hover {
+    background-color: #f8f9fa;
+    color: #FFC107;
+}
+
+/* ================= HEADER RIGHT ================= */
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+
+
+.location-selector:hover {
+    border-color: #FFC107;
+}
+
+.location-icon {
+    color: #FFC107;
+    font-size: 16px;
+}
+
+/* ================= AUTH BUTTONS ================= */
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.btn-login {
+    background-color: transparent;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-login:hover {
+    background-color: #f8f9fa;
+    border-color: #FFC107;
+}
+
+.btn-signup {
+    background-color: #FFC107;
+    color: #333;
+}
+
+.btn-signup:hover {
+    background-color: #FFB300;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+/* ================= OVERLAY ================= */
+
+.nav-menu.active::before {
+    content: '';
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    z-index: -1;
+}
+/* ================= RESPONSIVE ADJUSTMENTS ================= */
+
+@media (max-width: 768px) {
+    .header-container {
+        height: 60px;
+        padding: 0 15px;
+    }
+
+    .nav-menu {
+        top: 60px;
+        height: calc(100vh - 60px);
+    }
+
+    .nav-menu.active::before {
+        top: 60px;
+    }
+
+    .logo-text {
+        font-size: 20px;
+    }
+
+    .logo-text span:last-child {
+        font-size: 18px;
+    }
+
+    .location-selector {
+        display: none;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-text {
+        font-size: 18px;
+    }
+
+    .logo-text span:last-child {
+        font-size: 16px;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* ================= FIXED LOCATION SELECTOR ================= */
+
+/* 1. The Parent Container (Button) */
+.location-selector {
+    position: relative !important; /* Crucial: anchors the dropdown to this button */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #fff; /* Ensure the button itself has a background */
+    z-index: 1001;
+}
+
+/* 2. The Dropdown Menu (The box that was invisible) */
+.location-dropdown {
+    display: none; /* Hidden by default */
+    position: absolute !important;
+    
+    /* Positioning: Pushes it down 10px from the button */
+    top: calc(100% + 10px) !important; 
+    right: 0 !important;
+    
+    /* Size & Style */
+    width: 220px !important;
+    background-color: #ffffff !important; /* FORCE Solid White Background */
+    border: 1px solid #eee !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important; /* Strong shadow to pop out */
+    padding: 10px 0;
+    z-index: 99999 !important; /* Sit on top of the car image */
+}
+
+/* Show state */
+.location-dropdown.show {
+    display: block !important;
+}
+
+/* 3. The Items inside */
+.location-option {
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #333; /* Dark text */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff; /* Ensure items have background */
+    transition: background 0.2s;
+}
+
+.location-option:hover {
+    background-color: #f8f9fa !important;
+    color: #FFC107 !important;
+}
+
+/* Headers and Dividers */
+.dropdown-header {
+    padding: 8px 20px;
+    font-size: 11px;
+    color: #999;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #eee;
+    margin: 5px 0;
+}

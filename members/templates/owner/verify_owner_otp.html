@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Verify Owner OTP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+/>
+
+<style>
+:root{
+  --primary:#1089ff;
+  --bg:#f4f6f9;
+  --border:#e5e7eb;
+  --text:#111;
+  --muted:#6b7280;
+  --danger:#dc2626;
+}
+
+*{box-sizing:border-box;font-family:Poppins}
+
+body{
+  margin:0;
+  height:100vh;
+  background:linear-gradient(135deg,#eef4ff,#f4f6f9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  width:100%;
+  max-width:380px;
+  padding:36px 32px;
+  border-radius:22px;
+  box-shadow:0 30px 60px rgba(0,0,0,.12);
+  text-align:center;
+}
+
+/* HEADER */
+.icon{
+  width:64px;
+  height:64px;
+  margin:0 auto 12px;
+  border-radius:50%;
+  background:#eef4ff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--primary);
+  font-size:26px;
+}
+
+h3{
+  margin:8px 0 4px;
+  font-weight:700;
+}
+
+.subtitle{
+  font-size:14px;
+  color:var(--muted);
+  margin-bottom:22px;
+}
+
+/* OTP INPUT */
+.otp-input{
+  font-size:20px;
+  letter-spacing:8px;
+  text-align:center;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  outline:none;
+  width:100%;
+}
+
+.otp-input:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 2px rgba(16,137,255,.15);
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  margin-top:18px;
+  padding:14px;
+  border:none;
+  border-radius:999px;
+  background:var(--primary);
+  color:#fff;
+  font-weight:600;
+  font-size:15px;
+  cursor:pointer;
+  transition:.25s ease;
+}
+
+button:hover{
+  background:#0b6ad1;
+  transform:translateY(-1px);
+}
+
+/* MESSAGES */
+.msg{
+  margin-top:10px;
+  font-size:13px;
+  color:var(--danger);
+}
+
+/* TIMER */
+.timer{
+  margin-top:16px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+
+.resend {
+  display: none;
+}
+
+.resend{
+  margin-top:6px;
+}
+
+.resend button{
+  background:none;
+  color:var(--primary);
+  font-size:13px;
+  font-weight:600;
+  padding:0;
+  margin:0;
+  cursor:not-allowed;
+}
+
+.resend button.active{
+  cursor:pointer;
+  color:#0b6ad1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="icon">
+    <i class="fa-solid fa-shield-halved"></i>
+  </div>
+
+  <h3>Verify OTP</h3>
+  <div class="subtitle">
+    Enter the 6-digit code sent to your phone
+  </div>
+
+  {% for message in messages %}
+  <div class="msg">{{ message }}</div>
+  {% endfor %}
+
+  <form method="post">
+    {% csrf_token %}
+    <input
+      type="text"
+      name="otp"
+      maxlength="6"
+      pattern="[0-9]{6}"
+      class="otp-input"
+      placeholder="••••••"
+      required
+    >
+    <button type="submit">Verify & Continue</button>
+  </form>
+
+  <!-- TIMER -->
+  <div class="timer" id="timerText">
+    Resend OTP in <strong><span id="time" data-seconds="{{ remaining_seconds|default:0 }}">--:--</span>
+</strong>
+  </div>
+
+  <!-- RESEND -->
+  <div class="resend">
+      
+    <form method="post" action="{% url 'resend_owner_otp' phone %}" >
+      {% csrf_token %}
+      <button type="submit" id="resendBtn" disabled>
+        Resend OTP
+      </button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+const timeSpan = document.getElementById("time");
+const resendBtn = document.getElementById("resendBtn");
+const resendBox = document.querySelector(".resend");
+const timerText = document.getElementById("timerText");
+
+// 🔥 get seconds safely from data attribute
+let timeLeft = parseInt(timeSpan.dataset.seconds, 10) || 0;
+
+function updateTimer() {
+
+  // ⛔ If expired
+  if (timeLeft <= 0) {
+    timerText.innerHTML = "<strong>You can resend OTP now</strong>";
+    resendBox.style.display = "block";     // ✅ show resend
+    resendBtn.disabled = false;
+    resendBtn.classList.add("active");
+    timeSpan.textContent = "00:00";
+    return;
+  }
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+
+  timeSpan.textContent =
+    `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+
+  timeLeft--;
+  setTimeout(updateTimer, 1000);
+}
+
+// 🚀 start timer
+updateTimer();
+</script>
+
+</body>
+</html>

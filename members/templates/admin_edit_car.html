@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Edit Car Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Icons & Styles -->
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
+
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background: #000000;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Premium Navbar */
+        .navbar {
+            background: #0d1b2a;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .navbar h2 {
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .navbar a {
+            padding: 10px 20px;
+            background: #1b263b;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .navbar a:hover {
+            background: #415a77;
+        }
+
+        /* Page Container */
+        .edit-container {
+            max-width: 650px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px 35px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 26px;
+            color: #1b263b;
+            font-weight: 600;
+        }
+
+        /* Input Styling */
+        .form-group label {
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #1b263b;
+            box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            background: #1b263b;
+            color: #fff;
+            border: none;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover {
+            background: #415a77;
+        }
+
+        .btn-secondary {
+            display: block;
+            text-align: center;
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 10px;
+            background: #778da9;
+            color: #fff;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #415a77;
+        }
+
+        /* Fade animation */
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(15px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Premium Navbar -->
+    <div class="navbar">
+        <h2><i class="fas fa-tools"></i> Admin Edit Car Page</h2>
+
+        <a href="{% url 'admin_add_car' %}">
+            <i class="fas fa-arrow-left"></i> Back to Add Car
+        </a>
+    </div>
+
+    <!-- Edit Form Container -->
+    <div class="edit-container">
+        <h3><i class="fas fa-edit"></i> Edit Car Details</h3>
+
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Car Name</label>
+                <input type="text" name="name" value="{{ car.name }}" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>Brand</label>
+                <input type="text" name="brand" value="{{ car.brand }}" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category" class="form-control" required>
+                    <option value="premium" {% if car.category == "premium" %}selected{% endif %}>Premium</option>
+                    <option value="offroad" {% if car.category == "offroad" %}selected{% endif %}>Offroad</option>
+                    <option value="family" {% if car.category == "family" %}selected{% endif %}>Family</option>
+                    <option value="luxury" {% if car.category == "luxury" %}selected{% endif %}>Luxury</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Price Per Day</label>
+                <input type="number" name="price_per_day" value="{{ car.price_per_day }}" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>Current Image</label><br>
+                <img src="{{ car.image.url }}" width="150" style="border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"><br><br>
+
+                <label>Upload New Image (optional)</label>
+                <input type="file" name="image" class="form-control">
+            </div>
+
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-save"></i> Update Car
+            </button>
+
+            <a href="{% url 'admin_add_car' %}" class="btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </form>
+
+    </div>
+
+</body>
+</html>

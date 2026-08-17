@@ -1,0 +1,355 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout | Royal Rentals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/header.css' %}">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+{% include 'includes/header.html' %}
+
+<style>
+.checkout-section {
+  background: linear-gradient(180deg, #f6f7f9, #eef0f3);
+  min-height: 100vh;
+  padding: 70px 20px;
+}
+
+.checkout-wrapper {
+  max-width: 460px;
+  margin: auto;
+}
+
+.checkout-title {
+  text-align: center;
+  font-weight: 800;
+  font-size: 22px;
+  margin-bottom: 28px;
+}
+
+/* CARD */
+.checkout-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.15);
+}
+
+/* VEHICLE */
+.vehicle-row {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.vehicle-row img {
+  width: 100px;
+  height: 70px;
+  object-fit: contain;
+  border-radius: 14px;
+  background: #f3f4f6;
+  padding: 8px;
+}
+
+.vehicle-row h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.vehicle-type {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* 🔥 CAR SPECS */
+.car-specs {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.spec {
+  font-size: 12px;
+  background: #f9fafb;
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+/* TRIP DETAILS */
+.trip-details {
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 18px 0;
+  margin: 22px 0;
+}
+
+.trip-item {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.trip-item i {
+  color: #fbbc04;
+}
+
+.trip-item span {
+  color: #6b7280;
+}
+
+.trip-item strong {
+  font-weight: 600;
+  color: #111;
+}
+
+/* PRICE */
+.price-box {
+  text-align: center;
+  margin: 28px 0;
+}
+
+.price-box span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.price-box h2 {
+  font-size: 36px;
+  font-weight: 900;
+  margin: 6px 0;
+}
+
+.price-box small {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* PAY BUTTON */
+.pay-btn {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+  padding: 16px;
+  background: linear-gradient(135deg, #000, #222);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 15px;
+  text-align: center;
+  text-decoration: none;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.pay-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #000, #222);
+  color: #fff;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+}
+
+
+/* DRIVER OPTION */
+.driver-option{
+  margin: 20px 0;
+}
+
+.driver-box{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#f9fafb;
+  border:1px solid #e5e7eb;
+  padding:14px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.driver-box:hover{
+  background:#f3f4f6;
+}
+
+/* Hide default checkbox */
+.driver-box input{
+  display:none;
+}
+
+/* Custom checkbox */
+.checkmark{
+  width:22px;
+  height:22px;
+  border-radius:6px;
+  border:2px solid #d1d5db;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.2s;
+}
+
+/* Checked state */
+.driver-box input:checked + .checkmark{
+  background:#2563eb;
+  border-color:#2563eb;
+}
+
+.driver-box input:checked + .checkmark::after{
+  content:"✔";
+  color:#fff;
+  font-size:12px;
+}
+
+/* TEXT */
+.driver-text strong{
+  font-size:14px;
+  display:block;
+}
+
+.driver-text small{
+  font-size:12px;
+  color:#6b7280;
+}
+
+
+</style>
+
+<section class="checkout-section">
+  <div class="checkout-wrapper">
+
+    <h2 class="checkout-title">Confirm your ride</h2>
+
+    <div class="checkout-card">
+
+      <!-- VEHICLE -->
+      <div class="vehicle-row">
+        <img src="{{ car.image.url }}" alt="{{ car.name }}">
+        <div>
+          <h3>{{ car.name }}</h3>
+          <div class="vehicle-type">{{ car.brand }} • {{ car.model }}</div>
+
+          <!-- 🔥 CAR DETAILS -->
+          <div class="car-specs">
+            <div class="spec"><i class="fa-solid fa-user"></i> {{ car.seats }} seats</div>
+            <div class="spec"><i class="fa-solid fa-gas-pump"></i> {{ car.fuel_type }}</div>
+            <div class="spec"><i class="fa-solid fa-gear"></i> {{ car.transmission }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRIP DETAILS -->
+      <div class="trip-details">
+        <div class="trip-item">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>Pickup</span>
+          <strong>{{ pickup }}</strong>
+        </div>
+
+        <div class="trip-item">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>Drop</span>
+          <strong>{{ drop }}</strong>
+        </div>
+
+        <div class="trip-item">
+          <i class="fa-solid fa-clock"></i>
+          <span>Pickup</span>
+          <strong>{{ pickup_date }} · {{ pickup_time }}</strong>
+        </div>
+
+        <div class="trip-item">
+          <i class="fa-solid fa-clock"></i>
+          <span>Drop</span>
+          <strong>{{ drop_date }} · {{ drop_time }}</strong>
+        </div>
+
+        <div class="trip-item">
+          <i class="fa-solid fa-hourglass-half"></i>
+          <span>Total duration</span>
+          <strong>{{ total_hours }} hours</strong>
+        </div>
+      </div>
+
+
+
+      <!-- PRICE -->
+      <div class="price-box">
+        <span>Total fare</span>
+        <h2 id="totalPrice">₹ {{ total_price }}</h2>
+        <small>{{ total_hours }} hrs × ₹{{ car.price_per_hour }}/hour</small>
+      </div>
+
+      <form method="get" action="{% url 'confirm_pay' car.id %}">
+  <input type="hidden" name="pickup" value="{{ pickup }}">
+  <input type="hidden" name="drop" value="{{ drop }}">
+  <input type="hidden" name="pickup_date" value="{{ pickup_date }}">
+  <input type="hidden" name="pickup_time" value="{{ pickup_time }}">
+  <input type="hidden" name="drop_date" value="{{ drop_date }}">
+  <input type="hidden" name="drop_time" value="{{ drop_time }}">
+  <input type="hidden" name="total_hours" value="{{ total_hours }}">
+  <input type="hidden" id="basePrice" value="{{ total_price }}">
+<input type="hidden" id="totalHours" value="{{ total_hours }}">
+
+  <!-- DRIVER CHECKBOX HERE -->
+
+        <!-- DRIVER OPTION -->
+<div class="driver-option">
+  <label class="driver-box">
+    <input type="checkbox" name="want_driver" id="want_driver">
+    <span class="checkmark"></span>
+
+    <div class="driver-text">
+      <strong>Need a Driver?</strong>
+      <small>Add a professional driver for your trip</small>
+      <br>
+      <small>Base charge=500 + (100 for each hour)</small>
+    </div>
+  </label>
+</div>
+
+  
+
+  <button type="submit" class="pay-btn">
+    Confirm & Pay
+  </button>
+</form>
+
+    </div>
+  </div>
+</section>
+
+</body>
+
+<script>
+  const checkbox = document.getElementById("want_driver");
+  const priceEl = document.getElementById("totalPrice");
+
+  const basePrice = parseFloat(document.getElementById("basePrice").value);
+  const hours = parseFloat(document.getElementById("totalHours").value);
+
+  checkbox.addEventListener("change", function () {
+
+    let total = basePrice;
+
+    if (this.checked) {
+      const driverCost = 500 + (100 * hours);
+      total += driverCost;
+    }
+
+    priceEl.innerText = "₹ " + total;
+  });
+</script>
+</html>

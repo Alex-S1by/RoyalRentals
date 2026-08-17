@@ -1,0 +1,367 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Profile | Royal Rentals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --primary: #fbbc04;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --border: #e5e7eb;
+        --muted: #6b7280;
+        --dark: #111827;
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--dark);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 32px 20px 60px;
+      }
+
+      /* ---------- HEADER ---------- */
+      .page-title {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 24px;
+      }
+
+      /* ---------- PROFILE CARD ---------- */
+      .profile-card {
+        background: linear-gradient(135deg, #111827, #1f2937);
+        color: #fff;
+        border-radius: 22px;
+        padding: 28px;
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        margin-bottom: 40px;
+      }
+
+      .avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: #111;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: 900;
+      }
+
+      .profile-info h2 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .profile-info .meta {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 24px;
+        font-size: 14px;
+        color: #d1d5db;
+      }
+
+      .status-pill {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        background: #ecfdf5;
+        color: #065f46;
+      }
+
+      /* ---------- SECTION ---------- */
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .section h3 {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 18px;
+      }
+
+      /* ---------- BOOKING CARD ---------- */
+      .booking-card {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 20px;
+        margin-bottom: 18px;
+        transition: 0.25s ease;
+      }
+
+      .booking-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+      }
+
+      .booking-title {
+        font-size: 16px;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+
+      .booking-meta {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .booking-meta i {
+        margin-right: 6px;
+        color: var(--primary);
+      }
+
+      /* ---------- STATUS ---------- */
+      .status {
+        align-self: flex-start;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .active {
+        background: #ecfdf5;
+        color: #065f46;
+      }
+
+      .completed {
+        background: #f3f4f6;
+        color: #374151;
+      }
+
+      /* ---------- EMPTY ---------- */
+      .empty {
+        background: #fff;
+        border: 1px dashed var(--border);
+        padding: 24px;
+        border-radius: 18px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        background: #ffffff;
+        border: 1px solid var(--border);
+        color: var(--dark);
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        transition: 0.2s ease;
+        margin-bottom: 20px;
+      }
+
+      .back-btn i {
+        font-size: 13px;
+      }
+
+      .back-btn:hover {
+        background: #f9fafb;
+        transform: translateX(-3px);
+      }
+
+      .fav-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 999px;
+        text-decoration: none;
+        color: #111827;
+        margin-top: 12px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        transition: 0.2s ease;
+      }
+
+      .fav-btn:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+        transform: translateY(-1px);
+      }
+
+      .fav-btn i {
+        color: #ef4444; /* Red heart */
+      }
+
+      /* ---------- RESPONSIVE ---------- */
+      @media (max-width: 768px) {
+        .profile-card {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .profile-info .meta {
+          grid-template-columns: 1fr;
+        }
+
+        .booking-card {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <a href="{% url 'index' %}" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back
+      </a>
+
+      <h1 class="page-title">My Profile</h1>
+
+      <!-- PROFILE -->
+      <div class="profile-card">
+        <div class="avatar">{{ user.username|first|upper }}</div>
+
+        <div class="profile-info">
+          <h2>{{ user.username }}</h2>
+
+          <div class="meta">
+            <div><i class="fa-solid fa-envelope"></i> {{ user.email }}</div>
+            <div><i class="fa-solid fa-phone"></i> {{ user.phonenumber }}</div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              margin-top: 12px;
+            "
+          >
+            {% if user.isActive %}
+            <span class="status-pill">Verified User</span>
+            {% else %}
+            <span
+              class="status-pill"
+              style="background: #fee2e2; color: #991b1b"
+              >Inactive</span
+            >
+            {% endif %}
+
+            <a href="{% url 'favourites' %}" class="fav-btn">
+              <i class="fa-solid fa-heart"></i> View Favourites
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVE BOOKINGS -->
+      <div class="section">
+        <h3>🚗 Active Bookings</h3>
+
+        {% if active_bookings %} {% for booking in active_bookings %}
+        <a
+          href="{% url 'booking_detail' booking.id %}"
+          style="text-decoration: none; color: inherit"
+        >
+          <div class="booking-card" style="cursor: pointer">
+            <div>
+              <div class="booking-title">{{ booking.car.name }}</div>
+              <div class="booking-meta">
+                <div>
+                  <i class="fa-solid fa-location-dot"></i>
+                  {{ booking.pickup_location }} → {{ booking.drop_location }}
+                </div>
+                <div>
+                  <i class="fa-solid fa-clock"></i>
+                  {{ booking.pickup_datetime }} → {{ booking.drop_datetime }}
+                </div>
+                <div>
+                  <i class="fa-solid fa-hourglass-half"></i>
+                  {{ booking.total_hours }} hrs · ₹{{ booking.total_price }}
+                </div>
+              </div>
+            </div>
+            <div class="status active">{{ booking.status }}</div>
+          </div>
+        </a>
+
+        {% endfor %} {% else %}
+        <div class="empty">No active bookings</div>
+        {% endif %}
+      </div>
+
+      <!-- COMPLETED BOOKINGS -->
+      <div class="section">
+        <h3>✅ Completed Bookings</h3>
+
+        {% if completed_bookings %} {% for booking in completed_bookings %}
+        <a
+          href="{% url 'booking_detail' booking.id %}"
+          style="text-decoration: none; color: inherit"
+        >
+          <div class="booking-card">
+            <div>
+              <div class="booking-title">{{ booking.car.name }}</div>
+              <div class="booking-meta">
+                <div>
+                  <i class="fa-solid fa-location-dot"></i>
+                  {{ booking.pickup_location }} → {{ booking.drop_location }}
+                </div>
+                <div>
+                  <i class="fa-solid fa-clock"></i>
+                  {{ booking.pickup_datetime }} → {{ booking.drop_datetime }}
+                </div>
+                <div>
+                  <i class="fa-solid fa-hourglass-half"></i>
+                  {{ booking.total_hours }} hrs · ₹{{ booking.total_price }}
+                </div>
+              </div>
+            </div>
+            <div class="status completed">{{ booking.status }}</div>
+          </div>
+        </a>
+        {% endfor %} {% else %}
+        <div class="empty">No completed bookings</div>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

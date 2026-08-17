@@ -1,0 +1,347 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Register – Carbook</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Fonts & Icons -->
+<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+<link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+
+<style>
+:root{
+  --primary:#1089ff;
+  --bg:#f4f6f9;
+  --text-dark:#111;
+  --text-muted:#666;
+  --border:#e2e6ea;
+  --danger:#dc3545;
+}
+
+body{
+  min-height:100vh;
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Back Button */
+.back-btn{
+  position:absolute;
+  top:24px;
+  left:24px;
+  padding:8px 14px;
+  border-radius:10px;
+  background:#fff;
+  border:1px solid var(--border);
+  font-size:14px;
+  font-weight:500;
+  color:var(--text-dark);
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  transition:.25s;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.back-btn:hover{
+  color:var(--primary);
+  transform:translateX(-2px);
+}
+
+/* Card */
+.register-card{
+  width:100%;
+  max-width:440px;
+  background:#fff;
+  padding:42px 38px;
+  border-radius:20px;
+  box-shadow:0 25px 60px rgba(0,0,0,.12);
+}
+
+h3{text-align:center;font-weight:600;margin-bottom:6px}
+.subtitle{text-align:center;font-size:14px;color:var(--text-muted);margin-bottom:30px}
+
+label{font-size:13px;font-weight:500;margin-bottom:6px}
+
+.form-control{
+  height:48px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  font-size:14px;
+  padding-right:60px; /* space for eye */
+}
+
+.form-control:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(16,137,255,.15);
+}
+
+.password-wrapper{
+  position:relative;
+}
+
+.toggle-password{
+  position:absolute;
+  right:8px;
+  top: 36px;          /* FIXED vertical position */
+  height:36px;
+  width:36px;
+  border:none;
+  background:#f9fafb;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  color:#6b7280;
+}
+
+.toggle-password{
+  outline: none;
+}
+
+.toggle-password:focus{
+  outline: none;
+  box-shadow: none;
+}
+
+.toggle-password:hover{
+    background:#eef2ff;
+    color:#1089ff;
+   
+}
+
+
+.toggle-password2{
+  position:absolute;
+  right:8px;
+  top: 36px;          /* FIXED vertical position */
+  height:36px;
+  width:36px;
+  border:none;
+  background:#f9fafb;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  color:#6b7280;
+}
+
+.toggle-password2{
+  outline: none;
+}
+
+.toggle-password2:focus{
+  outline: none;
+  box-shadow: none;
+}
+
+.toggle-password2:hover{
+    background:#eef2ff;
+    color:#1089ff;
+   
+}
+
+
+
+.btn-primary{
+  background:var(--primary);
+  border:none;
+  height:48px;
+  border-radius:12px;
+  font-weight:600;
+}
+
+.error{
+  display:none;
+  font-size:12px;
+  color:var(--danger);
+  margin-top:4px;
+}
+
+.footer-text{
+  text-align:center;
+  font-size:14px;
+  margin-top:22px;
+  color:var(--text-muted);
+}
+.footer-text a{color:var(--primary);font-weight:500;text-decoration:none}
+</style>
+</head>
+
+<body>
+
+<a href="{% url 'index' %}" class="back-btn">
+  <i class="fas fa-arrow-left"></i> Back
+</a>
+
+<div class="register-card">
+<h3>Create an Account</h3>
+<div class="subtitle">Join us and start your journey</div>
+
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} text-center">{{ message }}</div>
+{% endfor %}
+
+<form method="post" action="{% url 'register' %}" id="registerForm" novalidate>
+{% csrf_token %}
+
+<div class="mb-3">
+  <label>Username</label>
+  <input type="text" class="form-control" name="username" required>
+</div>
+
+<div class="mb-3">
+  <label>Email</label>
+  <input type="email" class="form-control" id="email" name="email" required>
+  <div class="error" id="emailError">Invalid email</div>
+</div>
+
+<div class="mb-3">
+  <label>Phone Number</label>
+  <input type="text" class="form-control" id="phonenumber" name="phonenumber" required>
+  <div class="error" id="phoneError">Invalid phone</div>
+</div>
+
+<div class="mb-3 password-wrapper">
+  <label>Password</label>
+  <input type="password" class="form-control" id="password" name="password" required>
+  <button type="button" class="toggle-password" id="togglePassword">
+    <i class="fa-solid fa-eye" id="i1"></i>
+  </button>
+  <div class="error" id="passError">Weak password</div>
+</div>
+
+<div class="mb-3 password-wrapper">
+  <label>Confirm Password</label>
+  <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+  <button type="button" class="toggle-password2" id="togglePassword2">
+    <i class="fa-solid fa-eye" id="i2"></i>
+  </button>
+  <div class="error" id="confirmpassError">Passwords do not match</div>
+</div>
+
+<button type="submit" class="btn btn-primary w-100 mt-3">Send OTP</button>
+
+<div class="footer-text">
+Already have an account?
+<a href="{% url 'login' %}">Login here</a>
+</div>
+</form>
+</div>
+
+<script>
+
+
+
+document.getElementById("registerForm").addEventListener("submit", function (e) {
+    let email = document.getElementById("email").value.trim();
+    let phone = document.getElementById("phonenumber").value.trim();
+    let password = document.querySelector('input[name="password"]').value;
+    let confirmPassword = document.querySelector('input[name="confirm_password"]').value;
+
+    let valid = true;
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phonePattern = /^[0-9]{10}$/;
+
+    // Minimum 1 uppercase, 1 lowercase, 1 digit, 1 special char, min 6 chars
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/;
+
+    /* EMAIL */
+    if (!emailPattern.test(email)) {
+        document.getElementById("emailError").style.display = "block";
+        valid = false;
+    } else {
+        document.getElementById("emailError").style.display = "none";
+    }
+
+    /* PHONE */
+    if (!phonePattern.test(phone)) {
+        document.getElementById("phoneError").style.display = "block";
+        valid = false;
+    } else {
+        document.getElementById("phoneError").style.display = "none";
+    }
+
+    /* PASSWORD */
+    if (!passwordPattern.test(password)) {
+        document.getElementById("passError").style.display = "block";
+        valid = false;
+    } else {
+        document.getElementById("passError").style.display = "none";
+    }
+
+    /* CONFIRM PASSWORD */
+    if (password !== confirmPassword || confirmPassword === "") {
+        document.getElementById("confirmpassError").style.display = "block";
+        valid = false;
+    } else {
+        document.getElementById("confirmpassError").style.display = "none";
+    }
+
+    if (!valid) {
+        e.preventDefault();
+    }
+});
+
+
+
+
+const toggleBtn = document.getElementById("togglePassword");
+const passwordInput = document.getElementById("password");
+
+if (toggleBtn && passwordInput) {
+  const icon1 = document.getElementById("i1");
+
+  toggleBtn.addEventListener("click", () => {
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      icon1.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+      passwordInput.type = "password";
+      icon1.classList.replace("fa-eye-slash", "fa-eye");
+    }
+  });
+}
+
+
+const toggleBtn2 = document.getElementById("togglePassword2");
+const passwordInput2 = document.getElementById("confirm_password");
+
+if (toggleBtn2 && passwordInput2) {
+  const icon2 = document.getElementById("i2");
+
+  toggleBtn2.addEventListener("click", () => {
+    if (passwordInput2.type === "password") {
+      passwordInput2.type = "text";
+      icon2.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+      passwordInput2.type = "password";
+      icon2.classList.replace("fa-eye-slash", "fa-eye");
+    }
+  });
+}
+</script>
+
+</body>
+</html>
+
+
+
+

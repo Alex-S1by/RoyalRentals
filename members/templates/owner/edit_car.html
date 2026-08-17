@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Car | ZoomWheels</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+<link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<style>
+body{
+  background:#f4f6f9;
+  font-family:Poppins,sans-serif;
+  padding:40px 15px;
+  display:flex;
+  justify-content:center;
+}
+
+.wrapper{max-width:900px;width:100%}
+
+.page-header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.back-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  font-size:14px;
+  font-weight:600;
+  text-decoration:none;
+  color:#111827;
+}
+
+.card{
+  background:#fff;
+  padding:32px 36px;
+  border-radius:20px;
+  box-shadow:0 20px 40px rgba(0,0,0,.08);
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px 20px;
+}
+
+@media(min-width:768px){
+  .form-grid{grid-template-columns:1fr 1fr}
+}
+
+label{font-size:13px;font-weight:500}
+
+.form-control{
+  height:46px;
+  border-radius:12px;
+  font-size:14px;
+}
+
+.full{grid-column:1/-1}
+
+.preview{text-align:center;margin-top:10px}
+
+.preview img{
+  max-height:160px;
+  border-radius:14px;
+  border:1px solid #e5e7eb;
+}
+
+.btn-group{display:flex;gap:14px;margin-top:10px}
+.btn{height:48px;border-radius:14px;font-weight:600}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="page-header">
+    <a href="{% url 'owner_dashboard' %}" class="back-btn">
+      <i class="fas fa-arrow-left"></i> Back
+    </a>
+    <h4>Edit Car</h4>
+  </div>
+
+  <div class="card">
+
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+
+    <form method="post" enctype="multipart/form-data" id="editCarForm">
+      {% csrf_token %}
+
+      <div class="form-grid">
+
+        <div>
+          <label>Car Name</label>
+          <input type="text" name="name" value="{{ car.name }}" class="form-control" required>
+        </div>
+
+        <div>
+          <label>Brand</label>
+          <input type="text" name="brand" value="{{ car.brand }}" class="form-control" required>
+        </div>
+
+        <div>
+          <label>Model</label>
+          <input type="text" name="model" value="{{ car.model }}" class="form-control" required>
+        </div>
+
+        <div>
+          <label>Variant</label>
+          <input type="text" name="variant" value="{{ car.variant }}" class="form-control" required>
+        </div>
+
+        <div>
+          <label>Location</label>
+          <input type="text" name="place" value="{{ car.place }}" class="form-control" required>
+        </div>
+
+        <div>
+          <label>Car Type</label>
+          <select name="car_type" class="form-control">
+            <option value="sedan" {% if car.car_type == "sedan" %}selected{% endif %}>Sedan</option>
+            <option value="suv" {% if car.car_type == "suv" %}selected{% endif %}>SUV</option>
+            <option value="hatchback" {% if car.car_type == "hatchback" %}selected{% endif %}>Hatchback</option>
+            <option value="luxury" {% if car.car_type == "luxury" %}selected{% endif %}>Luxury</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Fuel Type</label>
+          <select name="fuel_type" class="form-control">
+            <option value="petrol" {% if car.fuel_type == "petrol" %}selected{% endif %}>Petrol</option>
+            <option value="diesel" {% if car.fuel_type == "diesel" %}selected{% endif %}>Diesel</option>
+            <option value="cng" {% if car.fuel_type == "cng" %}selected{% endif %}>CNG</option>
+            <option value="electric" {% if car.fuel_type == "electric" %}selected{% endif %}>Electric</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Transmission</label>
+          <select name="transmission" class="form-control">
+            <option value="Manual" {% if car.transmission == "Manual" %}selected{% endif %}>Manual</option>
+            <option value="Automatic" {% if car.transmission == "Automatic" %}selected{% endif %}>Automatic</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Seats</label>
+          <input type="number" name="seats" value="{{ car.seats }}" class="form-control">
+        </div>
+
+        <div>
+          <label>Price / Hour (₹)</label>
+          <input type="number" name="price" value="{{ car.price_per_hour }}" class="form-control">
+        </div>
+
+        <div class="full">
+          <label>Car Image</label>
+          <input type="file" name="image" class="form-control">
+          {% if car.image %}
+          <div class="preview">
+            <img src="{{ car.image.url }}">
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="full">
+  <div id="formError"
+       style="display:none;
+              background:#fee2e2;
+              color:#991b1b;
+              padding:10px 14px;
+              border-radius:12px;
+              font-size:14px;
+              font-weight:500;
+              margin-bottom:12px;
+              text-align:center;">
+    Please fill all required fields before updating the car.
+  </div>
+</div>
+
+
+        <div class="full btn-group">
+          <button class="btn btn-primary w-100">Update Car</button>
+          <a href="{% url 'owner_dashboard' %}" class="btn btn-outline-secondary w-100">Cancel</a>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+document.getElementById("editCarForm").addEventListener("submit", function (e) {
+    const errorBox = document.getElementById("formError");
+  let valid = true;
+
+  // select all inputs & selects except file input
+  const fields = this.querySelectorAll(
+    "input:not([type='file']), select"
+  );
+
+  fields.forEach(field => {
+    if (!field.value || !field.value.trim()) {
+      field.classList.add("is-invalid");
+      valid = false;
+    } else {
+      field.classList.remove("is-invalid");
+    }
+  });
+
+  if (!valid) {
+    e.preventDefault();
+    errorBox.style.display = "block";
+  } else {
+    errorBox.style.display = "none";
+  }
+});
+</script>
+
+
+
+
+</body>
+</html>

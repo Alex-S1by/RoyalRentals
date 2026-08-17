@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Order #{{ booking.id }} | Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+/* MATCHING DASHBOARD THEME */
+:root { --primary:#4f46e5; --bg:#f3f4f6; --sidebar:#111827; --card:#ffffff; --text-main:#1f2937; --text-muted:#6b7280; --border:#e5e7eb; }
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+body { background:var(--bg); min-height:100vh; padding: 40px 20px; color: var(--text-main); }
+
+.container { max-width: 1000px; margin: 0 auto; }
+
+/* HEADER */
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.page-header h1 { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+.order-id { font-size: 16px; color: var(--text-muted); font-weight: 500; }
+
+.btn-back { display: inline-flex; align-items: center; gap: 8px; background: #fff; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; }
+.btn-back:hover { background: #f9fafb; border-color: #d1d5db; }
+
+/* LAYOUT GRID */
+.grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+.info-card { background: var(--card); border-radius: 16px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 24px; }
+.card-header { font-size: 16px; font-weight: 700; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+
+/* CAR PREVIEW */
+.car-box { display: flex; gap: 20px; align-items: center; }
+.car-img { width: 120px; height: 80px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
+.car-details h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.car-owner { font-size: 13px; color: var(--text-muted); }
+
+/* DATA ROWS */
+.data-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+.data-label { color: var(--text-muted); font-weight: 500; }
+.data-val { font-weight: 600; color: var(--text-main); text-align: right; }
+.total-row { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; }
+.total-price { font-size: 20px; font-weight: 800; color: var(--primary); }
+
+/* BADGES */
+.status-pill { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; display: inline-block; }
+.status-BOOKED { background: #dbeafe; color: #1e40af; }
+.status-COMPLETED { background: #dcfce7; color: #166534; }
+.status-CANCELLED { background: #fee2e2; color: #991b1b; }
+
+/* REVIEW SECTION */
+.review-box { background: #fffbeb; border: 1px solid #fcd34d; padding: 20px; border-radius: 12px; position: relative; }
+.stars { color: #f59e0b; letter-spacing: 2px; margin-bottom: 8px; }
+.comment { font-style: italic; color: #92400e; font-size: 15px; line-height: 1.5; }
+.btn-delete-review { position: absolute; top: 15px; right: 15px; background: #fff; border: 1px solid #fcd34d; color: #dc2626; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+.btn-delete-review:hover { background: #fee2e2; border-color: #ef4444; }
+
+@media(max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="page-header">
+        <div>
+            <h1>Order Details <span class="order-id">#{{ booking.id }}</span></h1>
+        </div>
+        <a href="{% url 'admin_orders' %}" class="btn-back">
+            <i class="fa-solid fa-arrow-left"></i> Back to Orders
+        </a>
+    </div>
+
+    <div class="grid-layout">
+        
+        <div>
+            <div class="info-card">
+                <div class="card-header">
+                    Vehicle Information
+                    <span class="status-pill status-{{ booking.status }}">
+                        {{ booking.status|title }}
+                    </span>
+                </div>
+                <div class="car-box">
+                    <img src="{{ booking.car.image.url }}" class="car-img" alt="Car">
+                    <div class="car-details">
+                        <h3>{{ booking.car.name }}</h3>
+                        <div class="car-owner"><i class="fa-solid fa-user-shield"></i> Owned by: {{ booking.car.owner.name }}</div>
+                        <div class="car-owner" style="margin-top:4px;"><i class="fa-solid fa-phone"></i>+91  {{ booking.car.owner.phone }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="card-header">Trip Logistics</div>
+                <div class="data-row">
+                    <span class="data-label"><i class="fa-solid fa-location-dot"></i> Pickup</span>
+                    <span class="data-val">{{ booking.pickup_location }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label"><i class="fa-solid fa-flag-checkered"></i> Dropoff</span>
+                    <span class="data-val">{{ booking.drop_location }}</span>
+                </div>
+                <div style="margin: 16px 0; border-bottom: 1px solid #f3f4f6;"></div>
+                <div class="data-row">
+                    <span class="data-label">Start Time</span>
+                    <span class="data-val">{{ booking.pickup_datetime|date:"d M Y, h:i A" }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">End Time</span>
+                    <span class="data-val">{{ booking.drop_datetime|date:"d M Y, h:i A" }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Duration</span>
+                    <span class="data-val">{{ booking.total_hours }} Hours</span>
+                </div>
+            </div>
+
+            {% if review %}
+            <div class="info-card">
+                <div class="card-header">User Review</div>
+                <div class="review-box">
+                   
+                    <div class="stars">
+                        {% if review.rating == 5 %}★★★★★{% endif %}
+                        {% if review.rating == 4 %}★★★★☆{% endif %}
+                        {% if review.rating == 3 %}★★★☆☆{% endif %}
+                        {% if review.rating == 2 %}★★☆☆☆{% endif %}
+                        {% if review.rating == 1 %}★☆☆☆☆{% endif %}
+                    </div>
+                    <div class="comment">"{{ review.comment }}"</div>
+                    <div style="font-size:12px; color:#b45309; margin-top:8px; font-weight:600;">— Posted on {{ review.created_at|date:"d M Y" }}</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <div class="info-card">
+                <div class="card-header">Customer</div>
+                <div style="text-align:center; margin-bottom:16px;">
+                    <div style="width:60px; height:60px; background:#e0e7ff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#4f46e5; font-size:24px; font-weight:700;">
+                        {{ booking.user.username|slice:":1"|upper }}
+                    </div>
+                    <h3 style="margin-top:8px; font-size:16px;">{{ booking.user.username }}</h3>
+                    <p style="font-size:13px; color:var(--text-muted);">{{ booking.user.email }}</p>
+                    <p style="font-size:13px; color:var(--text-muted);">{{ booking.user.phonenumber }}</p>
+                </div>
+                
+            </div>
+
+            <div class="info-card">
+                <div class="card-header">Payment</div>
+                <div class="data-row">
+                    <span class="data-label">Hourly Rate</span>
+                    <span class="data-val">₹ {{ booking.car.price_per_hour }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Total Hours</span>
+                    <span class="data-val">x {{ booking.total_hours }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Payment Status</span>
+                    <span class="data-val">{{ booking.payment_status }}</span>
+                </div>
+                <div class="total-row">
+                    <span>Total </span>
+                    <span class="total-price">₹ {{ booking.total_price }}</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% if messages %}
+<script>
+    {% for message in messages %}
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: '{{ message }}',
+        timer: 2000,
+        showConfirmButton: false
+    });
+    {% endfor %}
+</script>
+{% endif %}
+
+</body>
+</html>

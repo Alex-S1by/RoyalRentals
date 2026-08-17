@@ -1,0 +1,300 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Car | ZoomWheels</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+<link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+/>
+
+<style>
+body {
+    background: #f4f6f9;
+    font-family: 'Poppins', sans-serif;
+    padding: 40px 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 900px;
+}
+
+/* ---------- HEADER ---------- */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #f9fafb;
+    transform: translateX(-2px);
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* ---------- CARD ---------- */
+.card {
+    width: 100%;
+    padding: 32px 36px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    background: #fff;
+}
+
+h3 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+/* ---------- FORM ---------- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px 20px;
+}
+
+@media (min-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+label {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.form-control {
+    height: 46px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+/* ---------- IMAGE PREVIEW ---------- */
+.preview {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.preview img {
+    max-height: 160px;
+    border-radius: 14px;
+    display: none;
+    border: 1px solid #e5e7eb;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn-group {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.btn {
+    height: 48px;
+    border-radius: 14px;
+    font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <a href="{% url 'owner_dashboard' %}" class="back-btn">
+      <i class="fas fa-arrow-left"></i>
+      Back
+    </a>
+    <div class="page-title">Add New Car</div>
+  </div>
+
+  <!-- CARD -->
+  <div class="card">
+
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} text-center">
+        {{ message }}
+      </div>
+    {% endfor %}
+
+    <form method="post" enctype="multipart/form-data" id="carForm">
+      {% csrf_token %}
+
+      <div class="form-grid">
+
+        <div>
+          <label>Car Name</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+
+        <div>
+          <label>Brand</label>
+          <input type="text" name="brand" class="form-control" required>
+        </div>
+
+        <div>
+          <label>Model</label>
+          <input type="text" name="model" class="form-control" required>
+        </div>
+
+        <div>
+          <label>Variant</label>
+          <input type="text" name="variant" class="form-control" required>
+        </div>
+
+        <div>
+          <label>Location / City</label>
+          <input type="text" name="place" class="form-control" required>
+        </div>
+
+        <div>
+          <label>Car Type</label>
+          <select name="car_type" class="form-control" required>
+            <option value="">Select</option>
+            <option value="sedan">Sedan</option>
+            <option value="suv">SUV</option>
+            <option value="hatchback">Hatchback</option>
+            <option value="luxury">Luxury</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Fuel Type</label>
+          <select name="fuel_type" class="form-control" required>
+            <option value="">Select</option>
+            <option value="petrol">Petrol</option>
+            <option value="diesel">Diesel</option>
+            <option value="cng">CNG</option>
+            <option value="electric">Electric</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Transmission</label>
+          <select name="transmission" class="form-control" required>
+            <option value="">Select</option>
+            <option>Manual</option>
+            <option>Automatic</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Seats</label>
+          <input type="number" name="seats" class="form-control" min="1" required>
+        </div>
+
+        <div>
+          <label>Price / Day (₹)</label>
+          <input type="number" name="price" class="form-control" min="1" required>
+        </div>
+
+        <div class="full">
+          <label>Car Image</label>
+          <input
+            type="file"
+            name="image"
+            class="form-control"
+            accept="image/*"
+            required
+            onchange="previewImage(event)"
+          >
+          <div class="preview">
+            <img id="imgPreview">
+          </div>
+        </div>
+
+        <div class="full btn-group">
+          <button type="submit" class="btn btn-primary w-100">
+            Add Car
+          </button>
+          <button type="button" class="btn btn-outline-secondary w-100"
+                  onclick="resetForm()">
+            Cancel
+          </button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<script>
+function previewImage(event) {
+  const file = event.target.files[0];
+  const img = document.getElementById("imgPreview");
+
+  if (!file.type.startsWith("image/")) {
+    alert("Only image files are allowed.");
+    event.target.value = "";
+    img.style.display = "none";
+    return;
+  }
+
+  if (file.size > 2 * 1024 * 1024) {
+    alert("Image size must be less than 2MB.");
+    event.target.value = "";
+    img.style.display = "none";
+    return;
+  }
+
+  img.src = URL.createObjectURL(file);
+  img.style.display = "block";
+}
+
+function resetForm() {
+  document.getElementById("carForm").reset();
+  document.getElementById("imgPreview").style.display = "none";
+}
+
+document.getElementById("carForm").addEventListener("submit", function(e) {
+  let valid = true;
+  document.querySelectorAll("input[required], select[required]").forEach(field => {
+    if (!field.value.trim()) valid = false;
+  });
+
+  if (!valid) {
+    alert("Please fill all fields correctly.");
+    e.preventDefault();
+  }
+});
+</script>
+
+</body>
+</html>

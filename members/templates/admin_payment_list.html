@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Report - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background: #0b0b0b; /* Full Black */
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        h2 {
+            color: #f4e801;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .btn-back {
+            background: #1f1f1f;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+            border: 1px solid #444;
+        }
+
+        .btn-back:hover {
+            background: #ffffff;
+            color: #000;
+        }
+
+        .table-container {
+            background: #111;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.05);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #ddd;
+        }
+
+        table th {
+            padding: 15px;
+            background: #1a1a1a;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        table td {
+            padding: 14px;
+            border-bottom: 1px solid #333;
+            font-size: 14px;
+        }
+
+        table tr:hover td {
+            background: rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
+        }
+
+        .total-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #222, #000);
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: #00ff9d;
+            font-size: 22px;
+            font-weight: 700;
+            text-align: right;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.1);
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="header-section">
+        <h2>🧾  Revenue Report 💸💲💶💰</h2>
+        <a href="{% url 'admin_dashboard' %}" class="btn-back">⬅ Back to Dashboard</a>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Car</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Payment Method</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for b in bookings %}
+                <tr>
+                    <td>{{ b.id }}</td>
+                    <td>{{ b.user.username }}</td>
+                    <td>{{ b.car.name }}</td>
+                    <td>{{ b.from_date }}</td>
+                    <td>{{ b.to_date }}</td>
+                    <td>{{ b.payment_method }}</td>
+                    <td>$ {{ b.total_amount }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="total-box">
+        Total Revenue: $ {{ total_revenue }}
+    </div>
+
+</body>
+</html>

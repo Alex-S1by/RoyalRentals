@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Successful | Royal Rentals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f6f7f9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .success-card {
+      background: #fff;
+      max-width: 420px;
+      width: 100%;
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      background: #22c55e;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      margin: 0 auto 16px;
+    }
+
+    .success-card h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .success-card p.sub {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    .details {
+      text-align: left;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      padding: 16px 0;
+      margin-bottom: 20px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .detail-row span {
+      color: #6b7280;
+    }
+
+    .detail-row strong {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .total {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: #000;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #222;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #111;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .booking-id {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="success-card">
+
+    <div class="success-icon">
+      <i class="fa-solid fa-check"></i>
+    </div>
+
+    <h2>Payment Successful</h2>
+    <p class="sub">Your booking is confirmed 🎉</p>
+
+    <div class="booking-id">
+      Booking ID: <strong>#{{ booking.id }}</strong>
+    </div>
+
+    <div class="details">
+      <div class="detail-row">
+        <span>Car</span>
+        <strong>{{ booking.car.name }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Pickup</span>
+        <strong>{{ booking.pickup_location }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Drop</span>
+        <strong>{{ booking.drop_location }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Duration</span>
+        <strong>{{ booking.total_hours }} hours</strong>
+      </div>
+
+<div class="detail-row">
+        <span>Owner</span>
+        <strong>{{ owner.name }}</strong>
+      </div>
+   
+
+
+    <div class="detail-row">
+        <span>Owner Number</span>
+        <strong>+91 {{ owner.phone }}</strong>
+      </div>
+    
+
+    </div>
+
+    <div class="total">
+      ₹ {{ booking.total_price }}
+    </div>
+
+    <div class="btn-group">
+      <a href="/" class="btn btn-secondary">Go Home</a>
+      <a href="/profile/" class="btn btn-primary">My Bookings</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

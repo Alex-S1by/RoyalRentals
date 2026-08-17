@@ -1,0 +1,352 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>All Cars | Royal Rentals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'assets/css/header.css' %}" />
+
+    <style>
+        :root {
+            --primary: #fbbc04;
+            --dark: #111827;
+            --bg: #f6f7f9;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        body { background: var(--bg); font-family: "Inter", sans-serif; }
+        
+        /* CONTAINER */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* SEARCH BAR */
+        .search-bar {
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .input-group { position: relative; }
+        
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-input:focus { border-color: var(--primary); }
+
+        .reset-btn {
+            background: var(--dark);
+            color: #fff;
+            border: none;
+            padding: 0 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        /* GRID */
+        .car-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* CARD STYLE */
+        .car-card {
+            background: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+            display: flex; /* Flex for styling */
+            flex-direction: column;
+        }
+
+        .car-card:hover { transform: translateY(-5px); }
+
+        .car-img-box {
+            height: 200px;
+            width: 100%;
+            background: #f1f1f1;
+        }
+
+        .car-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .car-details { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+
+        .car-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; color: var(--dark); }
+
+        .car-features {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .car-price {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-tag { font-size: 18px; font-weight: 800; color: var(--dark); }
+        .price-tag span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
+
+        .book-btn {
+            background: var(--primary);
+            color: var(--dark);
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        
+        .book-btn:hover { background: #e0a800; }
+
+        /* PAGINATION */
+        .pagination-container {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .page-btn:hover { background: #f3f4f6; }
+        .page-btn.active { background: var(--dark); color: #fff; border-color: var(--dark); }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* NO RESULTS */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px;
+            color: var(--text-muted);
+            display: none;
+        }
+
+        /* Responsive */
+        @media(max-width: 768px) {
+            .search-bar { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    {% include "includes/header.html" %}
+
+    <div class="container">
+        
+        <div class="search-bar">
+            <div class="input-group">
+                <i class="fa-solid fa-car"></i>
+                <input type="text" id="searchName" class="search-input" placeholder="Search by car name (e.g. Swift)...">
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-location-dot"></i>
+                <input type="text" id="searchLocation" class="search-input" placeholder="Search by location (e.g. Kochi)...">
+            </div>
+            <button class="reset-btn" onclick="resetFilters()">Reset</button>
+        </div>
+
+        <div class="car-grid" id="carContainer">
+            {% for car in cars %}
+            <div class="car-card" 
+                 data-name="{{ car.name|lower }}" 
+                 data-location="{{ car.place|lower }}">
+                
+                <div class="car-img-box">
+                    <img src="{{ car.image.url }}" alt="{{ car.name }}">
+                </div>
+                
+                <div class="car-details">
+                    <h3 class="car-title">{{ car.name }}</h3>
+                    
+                    <div class="car-features">
+                        <span><i class="fa-solid fa-location-dot"></i> {{ car.place }}</span>
+                        <span><i class="fa-solid fa-gear"></i> {{ car.transmission }}</span>
+                        <span><i class="fa-solid fa-chair"></i> {{ car.seats }}</span>
+                    </div>
+
+                    <div class="car-price">
+                        <div class="price-tag">₹{{ car.price_per_hour }} <span>/ hr</span></div>
+                        <a  href="{% url 'find_cars' %}?name={{ car.name }}&pickup={{ car.place }}" class="book-btn">Book</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="no-results" id="noResultsMsg">
+                <h3>No cars found</h3>
+                <p>Try adjusting your search criteria.</p>
+            </div>
+        </div>
+
+        <div class="pagination-container" id="paginationControls">
+            </div>
+
+    </div>
+
+    <script src="{% static 'assets/js/header.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            
+            // CONFIGURATION
+            const itemsPerPage = 6; // How many cars per page
+            let currentPage = 1;
+            
+            // DOM ELEMENTS
+            const allCars = Array.from(document.querySelectorAll('.car-card')); // Convert NodeList to Array
+            const carContainer = document.getElementById('carContainer');
+            const noResultsMsg = document.getElementById('noResultsMsg');
+            const paginationControls = document.getElementById('paginationControls');
+            const nameInput = document.getElementById('searchName');
+            const locInput = document.getElementById('searchLocation');
+
+            let filteredCars = [...allCars]; // Start with all cars
+
+            // --- FUNCTION 1: RENDER CARS ---
+            function renderCars() {
+                // 1. Hide all cars initially
+                allCars.forEach(car => car.style.display = 'none');
+                noResultsMsg.style.display = 'none';
+
+                // 2. If no results after filtering
+                if (filteredCars.length === 0) {
+                    noResultsMsg.style.display = 'block';
+                    paginationControls.innerHTML = ''; // Clear pagination
+                    return;
+                }
+
+                // 3. Calculate start/end index for current page
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                
+                // 4. Show only the cars for this page
+                const carsToShow = filteredCars.slice(startIndex, endIndex);
+                carsToShow.forEach(car => car.style.display = 'flex');
+
+                // 5. Render Pagination Buttons
+                renderPagination();
+            }
+
+            // --- FUNCTION 2: RENDER PAGINATION BUTTONS ---
+            function renderPagination() {
+                paginationControls.innerHTML = "";
+                const totalPages = Math.ceil(filteredCars.length / itemsPerPage);
+
+                if (totalPages <= 1) return; // No buttons needed if only 1 page
+
+                // Prev Button
+                const prevBtn = document.createElement("button");
+                prevBtn.className = "page-btn";
+                prevBtn.innerHTML = "<i class='fa-solid fa-chevron-left'></i>";
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.onclick = () => { currentPage--; renderCars(); };
+                paginationControls.appendChild(prevBtn);
+
+                // Number Buttons
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement("button");
+                    btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                    btn.innerText = i;
+                    btn.onclick = () => { currentPage = i; renderCars(); };
+                    paginationControls.appendChild(btn);
+                }
+
+                // Next Button
+                const nextBtn = document.createElement("button");
+                nextBtn.className = "page-btn";
+                nextBtn.innerHTML = "<i class='fa-solid fa-chevron-right'></i>";
+                nextBtn.disabled = currentPage === totalPages;
+                nextBtn.onclick = () => { currentPage++; renderCars(); };
+                paginationControls.appendChild(nextBtn);
+            }
+
+            // --- FUNCTION 3: FILTER LOGIC ---
+            function filterCars() {
+                const nameQuery = nameInput.value.toLowerCase().trim();
+                const locQuery = locInput.value.toLowerCase().trim();
+
+                filteredCars = allCars.filter(car => {
+                    const carName = car.dataset.name;
+                    const carLoc = car.dataset.location;
+
+                    // Check if input matches data attribute
+                    const matchesName = carName.includes(nameQuery);
+                    const matchesLoc = carLoc.includes(locQuery);
+
+                    return matchesName && matchesLoc;
+                });
+
+                currentPage = 1; // Always reset to page 1 on search
+                renderCars();
+            }
+
+            // --- EVENTS ---
+            nameInput.addEventListener('input', filterCars);
+            locInput.addEventListener('input', filterCars);
+
+            window.resetFilters = function() {
+                nameInput.value = '';
+                locInput.value = '';
+                filterCars();
+            };
+
+            // INITIAL LOAD
+            renderCars();
+        });
+    </script>
+
+</body>
+</html>

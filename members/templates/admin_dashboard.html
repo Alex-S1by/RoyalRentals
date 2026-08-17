@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard | ZoomWheels</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{ --primary:#4f46e5; --bg:#f3f4f6; --sidebar:#111827; --card:#ffffff; --text-main:#1f2937; --text-muted:#6b7280; --border:#e5e7eb; }
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+body{ background:var(--bg); min-height:100vh; display:flex; color: var(--text-main); }
+
+/* SIDEBAR */
+.sidebar{ width:260px; background:var(--sidebar); color:#fff; display:flex; flex-direction:column; padding:24px 20px; flex-shrink: 0; }
+.sidebar .logo{ font-size:22px; font-weight:700; margin-bottom:40px; color:#fff; display: flex; align-items: center; gap: 8px; }
+.sidebar .logo span{ color:var(--primary); }
+.sidebar a{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:10px; color:#9ca3af; text-decoration:none; margin-bottom:4px; transition:.2s; font-size:14px; font-weight: 500; }
+.sidebar a:hover, .sidebar a.active{ background:#1f2937; color:#fff; }
+.sidebar .logout{ margin-top:auto; color:#ef4444; }
+.sidebar .logout:hover{ background:rgba(239,68,68,0.1); color:#ef4444; }
+
+/* MAIN CONTENT */
+.main{ flex:1; display:flex; flex-direction:column; overflow-x: hidden; }
+.header{ background:#fff; padding:16px 32px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
+.header h1{ font-size:20px; font-weight:700; }
+.admin-badge{ background:#e0e7ff; color:var(--primary); padding:6px 12px; border-radius:20px; font-size:12px; font-weight:600; }
+
+.content{ padding:32px; flex:1; overflow-y: auto; }
+
+/* KPI CARDS */
+.stats-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:24px; margin-bottom:32px; }
+.stat-card{ background:var(--card); border-radius:16px; padding:24px; border:1px solid var(--border); display:flex; align-items:center; gap:20px; transition: transform 0.2s; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+.icon-box{ width:56px; height:56px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; }
+.stat-info h3{ font-size:14px; color:var(--text-muted); font-weight: 500; }
+.stat-info p{ font-size:24px; font-weight:700; color:var(--text-main); margin-top: 4px; }
+
+/* CHARTS GRID */
+.charts-grid{ display:grid; grid-template-columns: 2fr 1fr; gap:24px; margin-bottom:32px; }
+.chart-card{ background:var(--card); border-radius:16px; padding:24px; border:1px solid var(--border); height: 100%; }
+.chart-header{ margin-bottom: 20px; font-size: 16px; font-weight: 700; color: var(--text-main); }
+
+/* BOTTOM GRID (Cars + Table) */
+.bottom-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 24px; }
+.table-card { background:var(--card); border-radius:16px; padding:24px; border:1px solid var(--border); overflow: hidden; }
+
+/* MODERN TABLE */
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; padding: 12px; font-size: 13px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 16px 12px; font-size: 14px; border-bottom: 1px solid #f3f4f6; color: var(--text-main); font-weight: 500; }
+tr:last-child td { border-bottom: none; }
+.status-pill { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.pill-booked { background: #dbeafe; color: #1e40af; }
+.pill-completed { background: #dcfce7; color: #166534; }
+.pill-cancelled { background: #fee2e2; color: #991b1b; }
+
+/* Colors for KPI Icons */
+.blue-bg { background: #eff6ff; color: #3b82f6; }
+.green-bg { background: #f0fdf4; color: #22c55e; }
+.purple-bg { background: #f5f3ff; color: #8b5cf6; }
+.orange-bg { background: #fff7ed; color: #f97316; }
+
+@media(max-width:1024px){ 
+    .charts-grid, .bottom-grid { grid-template-columns: 1fr; } 
+    .sidebar { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <div class="logo"><i class="fas fa-steering-wheel"></i> Royal<span>Rentals</span></div>
+    <a href="{% url 'admin_dashboard' %}" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a>
+    <a href="{% url 'manage_users' %}"><i class="fas fa-users"></i> Users</a>
+    <a href="{% url 'driver_list' %}"><i class="fas fa-users"></i> Drivers</a>
+    <a href="{% url 'admin_orders' %}"><i class="fas fa-receipt"></i> Orders</a>
+    <a href="{% url 'manage_cars' %}"><i class="fas fa-car"></i> Cars</a>
+    <a href="{% url 'admin_revenue' %}"><i class="fas fa-wallet"></i> Revenue</a>
+    <a href="{% url 'logout' %}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="main">
+    <div class="header">
+        <h1>Dashboard Overview</h1>
+        <div class="admin-badge">Super Admin</div>
+    </div>
+
+    <div class="content">
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon-box blue-bg"><i class="fas fa-users"></i></div>
+                <div class="stat-info"><h3>Total Users</h3><p>{{ total_users }}</p></div>
+            </div>
+            <div class="stat-card">
+                <div class="icon-box purple-bg"><i class="fas fa-file-invoice"></i></div>
+                <div class="stat-info"><h3>Total Orders</h3><p>{{ total_orders }}</p></div>
+            </div>
+            <div class="stat-card">
+                <div class="icon-box orange-bg"><i class="fas fa-car"></i></div>
+                <div class="stat-info"><h3>Toatal Cars</h3><p>{{ total_cars }}</p></div>
+            </div>
+            <div class="stat-card">
+                <div class="icon-box green-bg"><i class="fas fa-wallet"></i></div>
+                <div class="stat-info"><h3>Total Revenue</h3><p>₹ {{ total_amount }}</p></div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">Monthly Revenue Trend</div>
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">Order Status Breakdown</div>
+                <canvas id="statusChart" style="max-height: 250px;"></canvas>
+            </div>
+        </div>
+
+        <div class="bottom-grid">
+            <div class="chart-card">
+                <div class="chart-header">Top 5 Popular Cars</div>
+                <canvas id="carChart"></canvas>
+            </div>
+
+            <div class="table-card">
+                <div class="chart-header">Recent Activity</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Car</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in recent_bookings %}
+                        <tr>
+                            <td>{{ booking.user.username }}</td>
+                            <td>{{ booking.car.name }}</td>
+                            <td>{{ booking.created_at|date:"d M" }}</td>
+                            <td>
+                                <span class="status-pill 
+                                    {% if booking.status == 'BOOKED' %}pill-booked
+                                    {% elif booking.status == 'COMPLETED' %}pill-completed
+                                    {% else %}pill-cancelled{% endif %}">
+                                    {{ booking.status|title }}
+                                </span>
+                            </td>
+                            <td>₹ {{ booking.total_price }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" style="text-align:center">No recent orders</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // --- 1. REVENUE CHART ---
+    const ctxRev = document.getElementById('revenueChart');
+    new Chart(ctxRev, {
+        type: 'line',
+        data: {
+            labels: {{ rev_labels|safe }}, // From Django
+            datasets: [{
+                label: 'Revenue (₹)',
+                data: {{ rev_values|safe }}, // From Django
+                borderColor: '#4f46e5',
+                backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // --- 2. STATUS CHART ---
+    const ctxStatus = document.getElementById('statusChart');
+    new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: {{ status_labels|safe }},
+            datasets: [{
+                data: {{ status_values|safe }},
+                backgroundColor: ['#3b82f6', '#22c55e', '#ef4444'],
+                hoverOffset: 4
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // --- 3. POPULAR CARS CHART ---
+    const ctxCar = document.getElementById('carChart');
+    new Chart(ctxCar, {
+        type: 'bar',
+        data: {
+            labels: {{ car_labels|safe }},
+            datasets: [{
+                label: 'Bookings',
+                data: {{ car_values|safe }},
+                backgroundColor: '#f97316',
+                borderRadius: 5
+            }]
+        },
+        options: { 
+            indexAxis: 'y', // Horizontal Bar Chart
+            responsive: true, 
+            plugins: { legend: { display: false } } 
+        }
+    });
+</script>
+
+</body>
+</html>

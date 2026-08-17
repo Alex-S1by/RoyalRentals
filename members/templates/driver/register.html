@@ -1,0 +1,265 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Driver Register – Carbook</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+
+<!-- Bootstrap -->
+<link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+
+<!-- ✅ Font Awesome FIXED -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root {
+    --primary: #1089ff;
+    --bg: #f4f6f9;
+    --border: #e2e6ea;
+    --danger: #dc3545;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.register-card {
+    width: 100%;
+    max-width: 450px;
+    background: #fff;
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.1);
+}
+
+h3 {
+    text-align: center;
+    font-weight: 600;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.input-group-text {
+    background: #f1f5f9;
+    border: none;
+}
+
+.form-control {
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(16,137,255,0.15);
+}
+
+.btn-primary {
+    background: var(--primary);
+    border: none;
+    height: 48px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.error {
+    display: none;
+    font-size: 12px;
+    color: var(--danger);
+    margin-bottom: 10px;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 8px;
+    top: 6px;
+    height: 36px;
+    width: 36px;
+    border: none;
+    background: #f9fafb;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.toggle-password:hover {
+    background: #eef2ff;
+}
+
+.footer-text {
+    text-align: center;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="register-card">
+<h3>Driver Registration</h3>
+<div class="subtitle">Start earning by driving</div>
+
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} text-center">
+    {{ message }}
+</div>
+{% endfor %}
+
+<form method="post" id="registerForm" action="{% url 'driver_register' %}">
+{% csrf_token %}
+
+<!-- Name -->
+<div class="input-group mb-2">
+    <span class="input-group-text"><i class="fa fa-user"></i></span>
+    <input type="text" id="name" name="name" class="form-control" placeholder="Driver Name">
+</div>
+<div class="error" id="nameError">Enter valid name</div>
+
+<!-- Email -->
+<div class="input-group mb-2">
+    <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+    <input type="email" id="email" name="email" class="form-control" placeholder="Email">
+</div>
+<div class="error" id="emailError">Enter valid email</div>
+
+<!-- Phone -->
+<div class="input-group mb-2">
+    <span class="input-group-text"><i class="fa fa-phone"></i></span>
+    <input type="text" id="phone" name="phone" class="form-control" placeholder="Phone">
+</div>
+<div class="error" id="phoneError">Enter 10-digit phone</div>
+
+<!-- License -->
+<div class="input-group mb-2">
+    <span class="input-group-text"><i class="fa fa-id-card"></i></span>
+    <input type="text" id="license" name="license_number" class="form-control" placeholder="License Number">
+</div>
+<div class="error" id="licenseError">Enter license number</div>
+
+<div class="input-group mb-2">
+    <span class="input-group-text">
+        <i class="fa fa-calendar"></i>
+    </span>
+    <input type="date" id="license_expiry" name="license_expiry" class="form-control">
+</div>
+<div class="error" id="expiryError">Select valid expiry date</div>
+
+<!-- Experience -->
+<input type="number" name="experience_years" class="form-control mb-3" placeholder="Experience (years)">
+
+<!-- Password -->
+<div class="password-wrapper mb-2">
+    <input type="password" id="password" name="password" class="form-control" placeholder="Password">
+    <button type="button" class="toggle-password" id="togglePassword">
+        <i class="fa-solid fa-eye"></i>
+    </button>
+</div>
+<div class="error" id="passError">Password must be strong</div>
+
+<!-- Confirm Password -->
+<div class="password-wrapper mb-2">
+    <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Confirm Password">
+    <button type="button" class="toggle-password" id="togglePassword2">
+        <i class="fa-solid fa-eye"></i>
+    </button>
+</div>
+<div class="error" id="confirmpassError">Passwords do not match</div>
+
+<button class="btn btn-primary w-100 mt-3">Register</button>
+
+<div class="footer-text">
+    Already registered? <a href="{% url 'driver_login' %}">Login</a>
+</div>
+
+</form>
+</div>
+
+<script>
+// Patterns
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phonePattern = /^[0-9]{10}$/;
+const passPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{6,}$/;
+
+// Inputs
+const name = document.getElementById("name");
+const email = document.getElementById("email");
+const phone = document.getElementById("phone");
+const license = document.getElementById("license");
+const password = document.getElementById("password");
+const confirmPassword = document.getElementById("confirm_password");
+const expiry = document.getElementById("license_expiry");
+
+
+// Errors
+const nameError = document.getElementById("nameError");
+const emailError = document.getElementById("emailError");
+const phoneError = document.getElementById("phoneError");
+const licenseError = document.getElementById("licenseError");
+const passError = document.getElementById("passError");
+const confirmError = document.getElementById("confirmpassError");
+const expiryError = document.getElementById("expiryError");
+
+// Real-time validation
+name.oninput = () => nameError.style.display = name.value ? "none" : "block";
+email.oninput = () => emailError.style.display = emailPattern.test(email.value) ? "none" : "block";
+phone.oninput = () => phoneError.style.display = phonePattern.test(phone.value) ? "none" : "block";
+license.oninput = () => licenseError.style.display = license.value ? "none" : "block";
+password.oninput = () => passError.style.display = passPattern.test(password.value) ? "none" : "block";
+confirmPassword.oninput = () => confirmError.style.display = password.value === confirmPassword.value ? "none" : "block";
+expiry.oninput = () => {
+    const today = new Date().toISOString().split("T")[0];
+    expiryError.style.display = (expiry.value && expiry.value >= today) ? "none" : "block";
+};
+
+// Submit validation
+document.getElementById("registerForm").onsubmit = function(e){
+   if(
+    !name.value ||
+    !emailPattern.test(email.value) ||
+    !phonePattern.test(phone.value) ||
+    !license.value ||
+    !expiry.value ||
+    expiry.value < new Date().toISOString().split("T")[0] ||
+    !passPattern.test(password.value) ||
+    password.value !== confirmPassword.value
+){
+    e.preventDefault();
+}
+};
+
+// Toggle password
+document.getElementById("togglePassword").onclick = function(){
+    const icon = this.querySelector("i");
+    password.type = password.type === "password" ? "text" : "password";
+    icon.classList.toggle("fa-eye");
+    icon.classList.toggle("fa-eye-slash");
+};
+
+document.getElementById("togglePassword2").onclick = function(){
+    const icon = this.querySelector("i");
+    confirmPassword.type = confirmPassword.type === "password" ? "text" : "password";
+    icon.classList.toggle("fa-eye");
+    icon.classList.toggle("fa-eye-slash");
+};
+document.getElementById("license_expiry").min = new Date().toISOString().split("T")[0];
+</script>
+
+</body>
+</html>

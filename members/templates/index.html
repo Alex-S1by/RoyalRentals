@@ -1,0 +1,1007 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>RoyalRentals</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{% static 'assets/css/open-iconic-bootstrap.min.css'%}"
+    />
+    <link rel="stylesheet" href="{% static 'assets/css/animate.css'%}" />
+
+    <link
+      rel="stylesheet"
+      href="{% static 'assets/css/owl.carousel.min.css'%}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'assets/css/owl.theme.default.min.css'%}"
+    />
+    <link rel="stylesheet" href="{% static 'assets/css/magnific-popup.css'%}" />
+
+    <link rel="stylesheet" href="{% static 'assets/css/aos.css'%}" />
+
+    <link rel="stylesheet" href="{% static 'assets/css/ionicons.min.css'%}" />
+
+    <link
+      rel="stylesheet"
+      href="{% static 'assets/css/bootstrap-datepicker.css'%}"
+    />
+
+    <link rel="stylesheet" href="{% static 'assets/css/flaticon.css'%}" />
+    <link rel="stylesheet" href="{% static 'assets/css/icomoon.css'%}" />
+    <link rel="stylesheet" href="{% static 'assets/css/style.css'%}" />
+    <link rel="stylesheet" href="{% static 'assets/css/header.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/hero.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/booking-form.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+
+    <!-- Font Awesome 6 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+
+  <body>
+
+    <style>
+      .ftco-about {
+  background: #f9fafb;
+}
+
+.about-img {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+}
+
+/* CONTENT */
+.about-content {
+  padding-left: 20px;
+}
+
+.about-subtitle {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #151513;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.about-title {
+  font-size: 34px;
+  font-weight: 900;
+  margin-bottom: 18px;
+  color: #111827;
+}
+
+.about-title span {
+  color: #171716;
+}
+
+.about-content p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 14px;
+}
+
+/* LIST */
+.about-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+
+.about-list li {
+  font-size: 14px;
+  margin-bottom: 10px;
+  padding-left: 24px;
+  position: relative;
+  color: #374151;
+}
+
+.about-list li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  color: #16a34a;
+  font-weight: 800;
+}
+
+.about-highlight {
+  font-weight: 700;
+  color: #111827;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .about-content {
+    padding-left: 0;
+  }
+
+  .about-title {
+    font-size: 26px;
+  }
+
+  .about-img {
+    border-radius: 16px;
+  }
+}
+
+    </style>
+    <!-- templates/includes/header.html -->
+    {% load static %} {% include 'includes/header.html' %}
+    <!-- END nav -->
+
+    <section class="hero-section">
+      <div class="hero-slider">
+        <div class="hero-slide slide-1">
+          <img src="{% static 'assets/images/hero/hero-1.jpg' %}" alt="Car 1" />
+        </div>
+
+        <div class="hero-slide slide-2">
+          <img src="{% static 'assets/images/hero/hero-2.jpg' %}" alt="Car 2" />
+        </div>
+
+        <div class="hero-slide slide-3">
+          <img src="{% static 'assets/images/hero/hero-3.jpg' %}" alt="Car 3" />
+        </div>
+        <div class="hero-slide slide-4">
+          <img src="{% static 'assets/images/hero/hero-4.jpg' %}" alt="Car 3" />
+        </div>
+        <div class="hero-slide slide-5">
+          <img src="{% static 'assets/images/hero/hero-5.jpg' %}" alt="Car 3" />
+        </div>
+        <div class="hero-slide slide-6">
+          <img src="{% static 'assets/images/hero/hero-6.jpg' %}" alt="Car 3" />
+        </div>
+        <div class="hero-slide slide-7">
+          <img src="{% static 'assets/images/hero/hero-7.jpg' %}" alt="Car 3" />
+        </div>
+      </div>
+    </section>
+
+    {% load static %}
+
+    <section class="booking-section">
+      <form
+        class="booking-form"
+        method="get"
+        action="{% url 'find_cars' %}"
+        id="bookingForm"
+      >
+        <div>
+          <h3>Find your perfect vehicle</h3>
+        </div>
+
+        <!-- ROW 1 -->
+        <div class="form-row1">
+          <!-- PICKUP -->
+          <div class="form-group autocomplete">
+            <label>PICK – UP LOCATION</label>
+
+            <div class="input-box">
+              <input
+                type="text"
+                id="pickup-location"
+                name="pickup"
+                placeholder="Choose Location"
+                autocomplete="off"
+              />
+              <span class="icon"
+                ><i class="fa-solid fa-location-arrow"></i
+              ></span>
+            </div>
+
+            <!-- ✅ Dropdown OUTSIDE input-box -->
+            <div class="suggestions"></div>
+          </div>
+
+          <!-- DROP -->
+          <div class="form-group autocomplete">
+            <label>DROP – OFF LOCATION</label>
+
+            <div class="input-box">
+              <input
+                type="text"
+                id="drop-location"
+                name="drop"
+                placeholder="Choose Drop location"
+                autocomplete="off"
+              />
+              <span class="icon"
+                ><i class="fa-solid fa-location-arrow"></i
+              ></span>
+            </div>
+            <div class="suggestions"></div>
+          </div>
+        </div>
+
+        <!-- ROW 2 -->
+        <div class="form-row form-row-4">
+          <div class="form-group">
+            <label>PICK – UP DATE</label>
+            <div class="input-box">
+              <span class="icon"><i class="fa-solid fa-calendar"></i></span>
+              <input
+                id="pickup_date"
+                name="pickup_date"
+                placeholder="Select Date"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>PICK – UP TIME</label>
+            <div class="input-box">
+              <span class="icon"><i class="fa-solid fa-clock"></i></span>
+              <input
+                id="pickup_time"
+                type="text"
+                name="pickup_time"
+                placeholder="Select Time"
+              />
+              <span class="icon-right"
+                ><i class="fa-solid fa-chevron-down"></i
+              ></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>DROP – OFF DATE</label>
+            <div class="input-box">
+              <span class="icon"><i class="fa-solid fa-calendar"></i></span>
+              <input
+                id="drop_date"
+                type="text"
+                name="drop_date"
+                placeholder="Select Date"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>DROP – OFF TIME</label>
+            <div class="input-box">
+              <span class="icon"><i class="fa-solid fa-clock"></i></span>
+              <input
+                id="drop_time"
+                type="text"
+                name="drop_time"
+                placeholder="Select Time"
+              />
+              <span class="icon-right"
+                ><i class="fa-solid fa-chevron-down"></i
+              ></span>
+            </div>
+          </div>
+        </div>
+        <!-- ROW 3 -->
+        <label class="checkbox">
+          <input type="checkbox" />
+          <span></span>
+          Return to the same location
+        </label>
+
+        <div class="form-footer">
+          <p
+            id="formError"
+            style="
+              display: none;
+              color: #dc2626;
+              font-size: 14px;
+              margin-bottom: 12px;
+              font-weight: 600;
+              text-align: center;
+            "
+          >
+            Please fill all details before continuing.
+          </p>
+          <button type="submit" class="submit-btn">
+            Let’s Drive
+            <span class="icon"
+              ><i class="fa-solid fa-person-walking-luggage"></i
+            ></span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+   <section class="ftco-section ftco-no-pt bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12 heading-section text-center ftco-animate mb-5">
+                <span class="subheading">What we offer</span>
+                <h2 class="mb-2">Featured Vehicles</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="carousel-car owl-carousel">
+                    {% for car in featured_cars %}
+                    <div class="item">
+                        <div class="car-wrap rounded ftco-animate">
+                            <div class="img rounded d-flex align-items-end"
+                                style="background-image: url('{{ car.image.url }}');"></div>
+
+                            <div class="text">
+                                <h2 class="mb-0">{{ car.name }}</h2>
+
+                                <div class="d-flex mb-3">
+                                    <span class="cat">{{ car.brand }}</span>
+                                    <p class="price ml-auto">
+                                        ₹{{ car.price_per_hour }} <span>/hour</span>
+                                    </p>
+                                </div>
+
+                                <div class="d-flex align-items-center mb-0">
+                                    <a href="{% url 'find_cars' %}?name={{ car.name }}&pickup={{ car.place }}"
+                                        class="btn btn-primary py-2 mr-2 flex-grow-1" style="flex: 1;">
+                                        Book now
+                                    </a>
+
+                                    <button type="button" class="btn btn-white py-2 px-3 feature-fav-btn"
+                                        data-car-id="{{ car.id }}"
+                                        style="border: 1px solid #e5e7eb; border-radius: 4px;">
+                                        <i class="fa-{% if car.is_favourite %}solid{% else %}regular{% endif %} fa-heart"
+                                            style="color: {% if car.is_favourite %}#ef4444{% else %}#6b7280{% endif %}; font-size: 18px;">
+                                        </i>
+                                    </button>
+
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-center w-100">No featured vehicles available</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-4 text-center">
+                <a href="{% url 'all_cars' %}" class="btn btn-primary py-3 px-5">View All Cars 
+                  <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+  <section class="ftco-section ftco-about">
+  <div class="container">
+    <div class="row align-items-center">
+
+      <!-- IMAGE -->
+      <div class="col-md-6 mb-4 mb-md-0">
+        <img
+          src="{% static 'assets/images/about.jpg' %}"
+          alt="Royal Rentals car rental service"
+          class="about-img"
+        />
+      </div>
+
+      <!-- CONTENT -->
+      <div class="col-md-6">
+        <div class="about-content">
+          <span class="about-subtitle">ABOUT US</span>
+          <h2 class="about-title">Welcome to <span>ROYAL RENTALS</span></h2>
+
+          <p>
+            Royal Rentals is a modern car rental platform designed to make
+            mobility simple, reliable, and premium. Whether it’s a city ride,
+            weekend getaway, or a long journey, we offer a curated fleet of
+            well-maintained vehicles at transparent prices.
+          </p>
+
+          <ul class="about-list">
+            <li>Wide range of cars – budget to luxury</li>
+            <li>Real-time availability & smart booking</li>
+            <li>No hidden charges, clear pricing</li>
+            <li>Secure payments & easy online booking</li>
+            <li>Flexible pickup & drop locations</li>
+          </ul>
+
+          <p class="about-highlight">
+            Customer-first experience from booking to return.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+    
+
+ <section class="ftco-section earn-section bg-light">
+  <div class="container">
+    <div class="row justify-content-center mb-5">
+      <div class="col-md-8 text-center heading-section ftco-animate">
+        <h2 class="mb-3">Earn With Us</h2>
+        <span class="subheading">For Car Owners</span>
+        <p class="mt-4" style="font-size:16px;color:#555;">
+          Turn your idle car into a steady source of income.  
+          List your vehicle on our platform, reach verified customers, and earn
+          securely — we handle bookings, payments, and support.
+        </p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center ftco-animate">
+      <div class="col-md-6 text-center">
+       <a href="{% url 'owner_register' %}"
+   class="btn btn-primary px-5 py-3 register-car-btn">
+  Register Your Car
+</a>
+      </div>
+    </div>
+    <br><br><br>
+  
+    <div class="row justify-content-center mb-5">
+      <div class="col-md-8 text-center heading-section ftco-animate">
+        <span class="subheading">For Car Drivers</span>
+       
+        <p class="mt-4" style="font-size:16px;color:#555;">
+         Turn your driving skills into a steady source of income.
+Drive with us, connect with verified riders, and earn securely — we handle bookings, payments, and support.
+        </p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center ftco-animate">
+      <div class="col-md-6 text-center">
+       <a href="{% url 'driver_register' %}"
+   class="btn btn-primary px-5 py-3 register-car-btn">
+  Register Driver
+</a>
+      </div>
+    </div>
+  </div>
+</section>
+    
+
+<section class="ftco-section testimony-section bg-light">
+  <div class="container">
+    <div class="row justify-content-center mb-5">
+      <div class="col-md-7 text-center heading-section ftco-animate">
+        <span class="subheading">Reviews</span>
+        <h2 class="mb-3">What Our Clients Say</h2>
+      </div>
+    </div>
+    
+    <div class="row ftco-animate">
+      <div class="col-md-12">
+        <div class="carousel-testimony owl-carousel ftco-owl">
+          
+          {% for review in recent_reviews %}
+          <div class="item">
+            <div class="testimony-wrap rounded text-center py-4 pb-5">
+              
+              <div class="text pt-4">
+                
+                <div class="mb-2" style="color: #fbbc04; font-size: 18px; letter-spacing: 2px;">
+                  {% with '12345' as range %}
+                  {% for _ in range %}
+                    {% if forloop.counter <= review.rating %}
+                      <i class="fa-solid fa-star"></i>
+                    {% else %}
+                      <i class="fa-regular fa-star" style="color: #d1d5db;"></i>
+                    {% endif %}
+                  {% endfor %}
+                  {% endwith %}
+                </div>
+
+                <p class="mb-4" style="font-style: italic; min-height: 80px; color: #6b7280;">
+                   "{{ review.comment|truncatechars:120 }}"
+                </p>
+                
+                <p class="name" style="font-weight: 700; font-size: 18px; margin-bottom: 0; color: #111827;">
+                    {{ review.user.username }}
+                </p>
+                
+                <span class="position" style="font-size: 13px; color: #9ca3af; font-weight: 600;">
+                    Rented {{ review.car.name }}
+                </span>
+
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="item">
+            <div class="testimony-wrap rounded text-center py-4 pb-5">
+              <div class="text pt-4">
+                 <div class="mb-2" style="color: #d1d5db; font-size: 18px;">
+                    <i class="fa-regular fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
+                 </div>
+                 <p class="mb-4">No reviews submitted yet. Be the first!</p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+   
+
+
+    <section
+      class="ftco-counter ftco-section img bg-light"
+      id="section-counter"
+    >
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div
+            class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate"
+          >
+            <div class="block-18">
+              <div class="text text-border d-flex align-items-center">
+                <strong class="number" data-number="3">0</strong>
+                <span>Year <br />Experienced</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate"
+          >
+            <div class="block-18">
+              <div class="text text-border d-flex align-items-center">
+                <strong class="number" data-number="10">0</strong>
+                <span>Total <br />Cars</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate"
+          >
+            <div class="block-18">
+              <div class="text text-border d-flex align-items-center">
+                <strong class="number" data-number="25">0</strong>
+                <span>Happy <br />Customers</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate"
+          >
+            <div class="block-18">
+              <div class="text d-flex align-items-center">
+                <strong class="number" data-number="6">0</strong>
+                <span>Total <br />Branches</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="ftco-footer ftco-bg-dark ftco-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2">
+                <a href="#" class="logo">ROYAL<span>RENTALS</span></a>
+              </h2>
+              <p>
+                THE BEST CAR RENTALS EVER...
+              </p>
+              <ul
+                class="ftco-footer-social list-unstyled float-md-left float-lft mt-5"
+              >
+                <li class="ftco-animate">
+                  <a href="#"><span class="icon-twitter"></span></a>
+                </li>
+                <li class="ftco-animate">
+                  <a href="#"><span class="icon-facebook"></span></a>
+                </li>
+                <li class="ftco-animate">
+                  <a href="#"><span class="icon-instagram"></span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4 ml-md-5">
+              <h2 class="ftco-heading-2">Information</h2>
+              <ul class="list-unstyled">
+                <li><a href="#" class="py-2 d-block">About</a></li>
+                
+                <li>
+                  <a href="#" class="py-2 d-block">Term and Conditions</a>
+                </li>
+                <li>
+                  <a href="#" class="py-2 d-block">Best Price Guarantee</a>
+                </li>
+                <li>
+                  <a href="#" class="py-2 d-block"
+                    >Privacy &amp; Cookies Policy</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2">Customer Support</h2>
+              <ul class="list-unstyled">
+                <li><a href="#" class="py-2 d-block">FAQ</a></li>
+                <li><a href="#" class="py-2 d-block">Payment Option</a></li>
+                <li><a href="#" class="py-2 d-block">Booking Tips</a></li>
+                <li><a href="#" class="py-2 d-block">How it works</a></li>
+                <li><a href="#" class="py-2 d-block">Contact Us</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2">Have a Questions?</h2>
+              <div class="block-23 mb-3">
+                <ul>
+                  <li>
+                    <span class="icon icon-map-marker"></span
+                    ><span class="text"
+                      >KOTTAYAM,INDIA</span
+                    >
+                  </li>
+                  
+                  <li>
+                    <a href="#"
+                      ><span class="icon icon-envelope"></span
+                      ><span class="text">info@carrentals.com</span></a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </footer>
+
+    <!-- loader -->
+    <div id="ftco-loader" class="show fullscreen">
+      <svg class="circular" width="48px" height="48px">
+        <circle
+          class="path-bg"
+          cx="24"
+          cy="24"
+          r="22"
+          fill="none"
+          stroke-width="4"
+          stroke="#eeeeee"
+        />
+        <circle
+          class="path"
+          cx="24"
+          cy="24"
+          r="22"
+          fill="none"
+          stroke-width="4"
+          stroke-miterlimit="10"
+          stroke="#F96D00"
+        />
+      </svg>
+    </div>
+
+    <script src="{% static 'assets/js/jquery.min.js'%}"></script>
+    <script src="{% static 'assets/js/jquery-migrate-3.0.1.min.js'%}"></script>
+    <script src="{% static 'assets/js/popper.min.js'%}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js'%}"></script>
+    <script src="{% static 'assets/js/jquery.easing.1.3.js'%}"></script>
+    <script src="{% static 'assets/js/jquery.waypoints.min.js'%}"></script>
+    <script src="{% static 'assets/js/jquery.stellar.min.js'%}"></script>
+    <script src="{% static 'assets/js/owl.carousel.min.js'%}"></script>
+    <script src="{% static 'assets/js/jquery.magnific-popup.min.js'%}"></script>
+    <script src="{% static 'assets/js/aos.js'%}"></script>
+    <script src="{% static 'assets/js/jquery.animateNumber.min.js'%}"></script>
+    <script src="{% static 'assets/js/bootstrap-datepicker.js'%}"></script>
+
+    <script src="{% static 'assets/js/scrollax.min.js'%}"></script>
+
+    <script src="{% static 'assets/js/main.js'%}"></script>
+    <script src="{% static 'assets/js/header.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="{% static 'assets/js/booking.js' %}"></script>
+
+    <script>
+      document
+        .getElementById("bookingForm")
+        .addEventListener("submit", function (e) {
+          const pickupLocation = document
+            .getElementById("pickup-location")
+            .value.trim();
+          const dropLocation = document
+            .getElementById("drop-location")
+            .value.trim();
+
+          const pickupDate = document
+            .querySelector("input[name='pickup_date']")
+            .value.trim();
+          const pickupTime = document
+            .querySelector("input[name='pickup_time']")
+            .value.trim();
+          const dropDate = document
+            .querySelector("input[name='drop_date']")
+            .value.trim();
+          const dropTime = document
+            .querySelector("input[name='drop_time']")
+            .value.trim();
+
+          const errorBox = document.getElementById("formError");
+
+          // ❌ If any field is empty → stop submission
+          if (
+            !pickupLocation ||
+            !dropLocation ||
+            !pickupDate ||
+            !pickupTime ||
+            !dropDate ||
+            !dropTime
+          ) {
+            e.preventDefault(); // STOP form submit
+            errorBox.style.display = "block";
+
+            // Optional: auto-hide error after 3 seconds
+            setTimeout(() => {
+              errorBox.style.display = "none";
+            }, 3000);
+
+            return false;
+          }
+
+          // ✅ All fields filled → allow submit
+          errorBox.style.display = "none";
+        });
+
+      function getNextHourSlot() {
+        const now = new Date();
+
+        // Move to next hour
+        now.setHours(now.getHours() + 1);
+        now.setMinutes(0, 0, 0);
+
+        return now.toTimeString().slice(0, 5); // "HH:MM"
+      }
+
+      const pickupTimePicker = flatpickr("#pickup_time", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "h:i K",
+        minuteIncrement: 60,
+        maxTime: "23:00",
+        disableMobile: true,
+      });
+
+      flatpickr("#pickup_date", {
+        dateFormat: "d M Y",
+        minDate: "today",
+        onChange: function (selectedDates) {
+          const selected = selectedDates[0];
+          const today = new Date();
+
+          let minTime;
+
+          if (selected.toDateString() === today.toDateString()) {
+            minTime = getNextHourSlot(); // 🔥 CURRENT NEXT SLOT
+          } else {
+            minTime = "06:00"; // opening time
+          }
+
+          pickupTimePicker.set("minTime", minTime);
+          pickupTimePicker.setDate(minTime, true); // ✅ force valid time
+        },
+      });
+
+      const dropTimePicker = flatpickr("#drop_time", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "h:i K",
+        minuteIncrement: 60,
+        maxTime: "23:00",
+        disableMobile: true,
+      });
+
+      flatpickr("#drop_date", {
+        dateFormat: "d M Y",
+        minDate: "today",
+        onChange: function (selectedDates) {
+          const selected = selectedDates[0];
+          const today = new Date();
+
+          let minTime;
+
+          if (selected.toDateString() === today.toDateString()) {
+            minTime = getNextHourSlot(); // 🔥 CURRENT NEXT SLOT
+          } else {
+            minTime = "06:00"; // opening time
+          }
+
+          dropTimePicker.set("minTime", minTime);
+          dropTimePicker.setDate(minTime, true); // ✅ force valid time
+        },
+      });
+
+      function setupAutocomplete(inputId) {
+        const input = document.getElementById(inputId);
+        const box = input
+          .closest(".autocomplete")
+          .querySelector(".suggestions");
+
+        input.addEventListener("input", async () => {
+          const query = input.value.trim();
+          box.innerHTML = "";
+
+          if (!query) {
+            box.style.display = "none";
+            return;
+          }
+
+          const res = await fetch(`/api/locations/?q=${query}`);
+          const data = await res.json();
+
+          if (data.results.length === 0) {
+            box.innerHTML = `<div class="no-result">Not serviceable location</div>`;
+            box.style.display = "block";
+            return;
+          }
+
+          data.results.forEach((place) => {
+            const div = document.createElement("div");
+            div.textContent = place;
+            div.onclick = () => {
+              input.value = place;
+              box.style.display = "none";
+            };
+            box.appendChild(div);
+          });
+
+          box.style.display = "block";
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!input.contains(e.target)) {
+            box.style.display = "none";
+          }
+        });
+      }
+
+      // // Initialize Date Pickers (Existing)
+      // flatpickr(".date-picker", {
+      //   dateFormat: "Y-m-d",
+      //   minDate: "today",
+      // });
+
+      // // ✅ Initialize New Uber-Style Time Picker
+      // flatpickr(".time-picker-input", {
+      //   enableTime: true,
+      //   noCalendar: true,
+      //   dateFormat: "h:i K", // Format: 12:00 PM
+      //   time_24hr: false,
+      //   minuteIncrement: 60, // Uber usually does 10 or 15 min intervals
+      //   minTime: "06:00", // 🛑 Limit start to 6 AM
+      //   maxTime: "23:00",
+      //   defaultDate: "06:00", // Optional: Pre-fill with 6:00 AM
+      //   disableMobile: "true", // Forces the nice desktop styler even on mobile
+      // });
+
+      setupAutocomplete("pickup-location");
+      setupAutocomplete("drop-location");
+
+
+
+     
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const favButtons = document.querySelectorAll('.feature-fav-btn');
+
+    favButtons.forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent carousel click issues
+
+            const carId = this.dataset.carId;
+            // Find the CSRF token relative to this button
+            const csrfInput = this.parentElement.querySelector('[name=csrfmiddlewaretoken]');
+            const csrf = csrfInput ? csrfInput.value : '{{ csrf_token }}';
+            const icon = this.querySelector('i');
+
+            // Visual feedback (disable temporarily)
+            this.disabled = true;
+            this.style.opacity = '0.7';
+
+            try {
+                const res = await fetch(`/toggle-favourite/${carId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrf,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                // Handle Not Logged In
+                if (res.status === 401) {
+                    Swal.fire({
+                        title: 'Login Required',
+                        text: 'Please login to save favourites',
+                        icon: 'info',
+                        confirmButtonText: 'Login',
+                        showCancelButton: true
+                    }).then((result) => {
+                        if (result.isConfirmed) window.location.href = "/login";
+                    });
+                    return;
+                }
+
+                if (!res.ok) throw new Error('Request failed');
+
+                const data = await res.json();
+
+                // Toggle Icon based on server response
+                if (data.status === 'added') {
+                    icon.classList.remove('fa-regular');
+                    icon.classList.add('fa-solid');
+                    icon.style.color = '#ef4444'; // Red
+                    
+                    // Optional: Toast Notification
+                    const Toast = Swal.mixin({
+                        toast: true, position: 'bottom-end', showConfirmButton: false, timer: 2000
+                    });
+                    Toast.fire({ icon: 'success', title: 'Added to favourites' });
+                    
+                } else {
+                    icon.classList.remove('fa-solid');
+                    icon.classList.add('fa-regular');
+                    icon.style.color = '#6b7280'; // Grey
+                }
+
+            } catch (err) {
+                console.error(err);
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Could not update favourite' });
+            } finally {
+                this.disabled = false;
+                this.style.opacity = '1';
+            }
+        });
+    });
+});
+
+    </script>
+  </body>
+</html>

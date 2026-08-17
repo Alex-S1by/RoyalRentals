@@ -1,0 +1,535 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Booking Details | Royal Rentals</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+/* ... (Keep your existing CSS variables and styles) ... */
+:root{
+  --primary:#fbbc04;
+  --primary-hover:#eab308;
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --muted:#6b7280;
+  --dark:#111827;
+  --danger:#dc2626;
+  --success:#16a34a;
+}
+
+*{box-sizing:border-box;font-family:'Inter',sans-serif}
+body{margin:0;background:var(--bg);color:var(--dark)}
+
+.container{ max-width:900px; margin:auto; padding:30px 20px 60px; }
+
+/* BACK BUTTON */
+.back-btn{ display:inline-flex; align-items:center; gap:8px; margin-bottom:22px; text-decoration:none; font-weight:700; color:var(--dark); transition: 0.2s; }
+.back-btn:hover { transform: translateX(-3px); }
+
+/* CARDS */
+.card{ background:var(--card); border-radius:24px; padding:28px; border:1px solid var(--border); margin-bottom:24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); }
+
+.section-title{ font-size:20px; font-weight:800; margin-bottom:18px; color: var(--dark); }
+
+/* CAR INFO */
+.car-row{ display:flex; gap:20px; align-items:center; }
+.car-row img{ width:140px; height:100px; object-fit:contain; border-radius:16px; background:#f9fafb; padding:10px; border: 1px solid var(--border); }
+.car-name{ font-size:24px; font-weight:800; line-height: 1.2; }
+
+/* STATUS BADGE */
+.status{ display:inline-flex; align-items: center; gap: 6px; margin-top:10px; padding:6px 14px; border-radius:999px; font-size:13px; font-weight:700; text-transform: capitalize; }
+.active{background:#dcfce7;color:#166534}
+.completed{background:#f3f4f6;color:#374151}
+.cancelled{background:#fee2e2;color:#991b1b}
+
+/* SPECS */
+.car-specs { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.spec { font-size: 13px; background: #f9fafb; border-radius: 8px; padding: 8px 14px; color: #4b5563; font-weight: 500; border: 1px solid var(--border); }
+
+/* DETAILS GRID */
+.details{ display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:14px; }
+.detail{ display:flex; gap:14px; align-items:flex-start; }
+.detail i{ color:var(--primary); font-size: 18px; margin-top:2px; background: #fffbeb; padding: 10px; border-radius: 12px; }
+.detail strong { display: block; margin-bottom: 2px; color: var(--dark); font-size: 14px;}
+.detail div { color: var(--muted); line-height: 1.5; }
+
+/* PRICE SECTION */
+.price-section { margin-top: 30px; padding-top: 24px; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; }
+.price-label { font-size: 14px; color: var(--muted); font-weight: 600; }
+.total-price { font-size: 32px; font-weight: 900; color: var(--dark); }
+
+/* BUTTONS */
+.cancel-btn{ width:100%; margin-top:24px; padding:16px; border-radius:16px; border:none; background:#fee2e2; color:#991b1b; font-weight:700; font-size:15px; cursor:pointer; transition: 0.2s; }
+.cancel-btn:hover{ background:#fecaca; }
+
+/* ---------- REVIEW UI ---------- */
+.review-header { text-align: center; margin-bottom: 24px; }
+.review-header p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+/* Star Rating */
+.star-rating { display: flex; flex-direction: row-reverse; justify-content: center; gap: 8px; margin-bottom: 24px; background: #f9fafb; padding: 16px; border-radius: 16px; border: 1px dashed var(--border); }
+.star-rating input { display: none; }
+.star-rating label { font-size: 36px; color: #e5e7eb; cursor: pointer; transition: all 0.2s ease; }
+.star-rating label:hover, .star-rating label:hover ~ label, .star-rating input:checked ~ label { color: #f59e0b; transform: scale(1.1); }
+
+.review-form-group { margin-bottom: 20px; }
+.form-label { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: block; color: var(--dark); }
+
+.review-box { width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border); font-size: 15px; resize: vertical; min-height: 120px; outline: none; background: #fff; transition: 0.2s; line-height: 1.6; }
+.review-box:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(251, 188, 4, 0.15); }
+
+.submit-review-btn { background: var(--dark); color: #fff; width: 100%; padding: 16px; border-radius: 16px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.2s; }
+.submit-review-btn:hover { background: #000; transform: translateY(-2px); }
+
+/* Existing Review Card */
+.existing-review { background: #fff; border-left: 5px solid var(--primary); padding: 24px; border-radius: 4px 16px 16px 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); position: relative; }
+.review-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.static-stars { color: #f59e0b; letter-spacing: 3px; font-size: 20px; }
+.review-score { background: #fffbeb; color: #b45309; padding: 4px 12px; border-radius: 99px; font-weight: 700; font-size: 13px; }
+.review-text { font-style: italic; color: #4b5563; line-height: 1.7; position: relative; padding-left: 28px; }
+.review-text::before { content: '\f10d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: -4px; color: var(--primary); font-size: 18px; opacity: 0.4; }
+
+/* Delete Button */
+.delete-review-btn {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-left: 10px;
+}
+.delete-review-btn:hover { background: #fecaca; transform: scale(1.05); }
+
+
+/* CHAT CONTAINER */
+.chat-box{
+  width:100%;
+  max-width:600px;
+  margin:auto;
+  background:#fff;
+  border-radius:16px;
+  border:1px solid #e5e7eb;
+  display:flex;
+  flex-direction:column;
+  height:420px;
+  overflow:hidden;
+}
+
+/* CHAT BODY */
+.chat-body{
+  flex:1;
+  padding:16px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  background:#f1f5f9;
+}
+
+/* MESSAGE COMMON */
+.chat-message{
+  max-width:70%;
+  padding:10px 14px;
+  border-radius:14px;
+  font-size:14px;
+  line-height:1.4;
+  position:relative;
+}
+
+/* DRIVER (RIGHT SIDE) */
+.chat-message.sent{
+  background:#2563eb;
+  color:#fff;
+  align-self:flex-end;
+  border-bottom-right-radius:4px;
+}
+
+/* USER (LEFT SIDE) */
+.chat-message.received{
+  background:#e5e7eb;
+  color:#111827;
+  align-self:flex-start;
+  border-bottom-left-radius:4px;
+}
+
+/* INPUT AREA */
+.chat-input{
+  display:flex;
+  border-top:1px solid #e5e7eb;
+  background:#fff;
+}
+
+.chat-input input{
+  flex:1;
+  padding:12px;
+  border:none;
+  outline:none;
+  font-size:14px;
+}
+
+.chat-input button{
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  padding:0 18px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.chat-input button:hover{
+  background:#1d4ed8;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .details{grid-template-columns:1fr}
+  .car-row{flex-direction:column;align-items:flex-start}
+  .price-section { flex-direction: column; gap: 8px; align-items: flex-start; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="{% url 'profile' %}" class="back-btn">
+  <i class="fa-solid fa-arrow-left"></i> Back
+</a>
+
+<div class="card">
+  <div class="car-row">
+    <img src="{{ booking.car.image.url }}" alt="{{ booking.car.name }}">
+    <div>
+      <div class="car-name">{{ booking.car.name }}</div>
+
+     <div class="status {% if booking.status == 'BOOKED' or booking.status == 'Running' and is_active %}active{% elif booking.status == 'BOOKED' or booking.status == 'Running' %}completed{% else %}cancelled{% endif %}">
+  
+  {% if booking.status == 'BOOKED' or booking.status == 'Running'  %}
+      <i class="fa-solid fa-circle-check"></i> Active
+  
+  {% elif booking.status == 'COMPLETED' %}
+      <i class="fa-solid fa-check-double"></i> Completed
+
+  {% elif booking.status == 'Pending' and booking.driver_id == NULL %}
+       Driver Not Assigned
+  
+  {% else %}
+      <i class="fa-solid fa-ban"></i> {{ booking.status}}
+  
+  {% endif %}
+  
+</div>
+
+      <div class="car-specs">
+          <div class="spec"><i class="fa-solid fa-user"></i> {{ booking.car.seats }} Seats</div>
+          <div class="spec"><i class="fa-solid fa-gas-pump"></i> {{ booking.car.fuel_type }}</div>
+          <div class="spec"><i class="fa-solid fa-gear"></i> {{ booking.car.transmission }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="section-title">Booking Details</div>
+
+  <div class="details">
+    <div class="detail">
+      <i class="fa-solid fa-map-location-dot"></i>
+      <div>
+        <strong>Route</strong>
+        {{ booking.pickup_location }} → {{ booking.drop_location }}
+      </div>
+    </div>
+
+    <div class="detail">
+      <i class="fa-solid fa-map-location-dot"></i>
+      <div>
+        <strong>Pickup Location</strong>
+        {{ booking.car.landmark }}
+      </div>
+    </div>
+    
+     <div class="detail">
+      <i class="fa-solid fa-calendar-day"></i>
+      <div>
+        <strong>Booked On</strong>
+        {{ booking.created_at|date:"d M Y, h:i A" }}
+      </div>
+    </div>
+
+    <div class="detail">
+      <i class="fa-solid fa-clock"></i>
+      <div>
+        <strong>Pickup Time</strong>
+        {{ booking.pickup_datetime }}
+      </div>
+    </div>
+
+    <div class="detail">
+      <i class="fa-solid fa-flag-checkered"></i>
+      <div>
+        <strong>Drop Time</strong>
+        {{ booking.drop_datetime }}
+      </div>
+    </div>
+
+    <div class="detail">
+      <i class="fa-solid fa-stopwatch"></i>
+      <div>
+        <strong>Duration</strong>
+        {{ booking.total_hours }} hours
+      </div>
+    </div>
+    <div class="detail">
+      <i class="fa-solid fa-tag"></i>
+      <div>
+        <strong>Hourly Rate</strong>
+        ₹ {{ booking.car.price_per_hour }}
+      </div>
+    </div>
+    <div class="detail">
+      <i class="fa-solid fa-user-shield"></i>
+      <div>
+        <strong>Owner Name</strong>
+        {{ owner.name }} 
+      </div>
+    </div>
+    <div class="detail">
+      <i class="fa-solid fa-phone"></i>
+      <div>
+        <strong>Owner Contact</strong>
+        {{ owner.phone }} 
+      </div>
+    </div>
+ {% if booking.want_driver %}
+      {% if booking.driver %}
+    <div class="detail">
+      <i class="fa-solid fa-user-tie"></i>
+      <div>
+        <strong>Driver Name</strong>
+        {{ booking.driver.name }} 
+      </div>
+    </div>
+     <div class="detail">
+      <i class="fa-solid fa-phone"></i>
+      <div>
+        <strong>Driver Contact</strong>
+        {{ booking.driver.phone }} 
+      </div>
+    </div>
+    {% else %}
+     <div class="detail">
+      <i class="fa-solid fa-user-tie"></i>
+      <div>
+        <strong>Driver</strong>
+        Not Assigned Yet
+      </div>
+    </div>
+  {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="price-section">
+    <span class="price-label">Total Amount Paid</span>
+    <span class="total-price">₹ {{ booking.total_price }}</span>
+  </div>
+
+  {% if is_active and booking.status == "BOOKED" %}
+  <form method="post" action="{% url 'cancel_booking' booking.id %}">
+    {% csrf_token %}
+    <button class="cancel-btn">
+      Cancel Booking
+    </button>
+  </form>
+  {% endif %}
+</div>
+
+{% if booking.status == "COMPLETED"  %}
+<div class="card">
+    <div class="review-header">
+        <div class="section-title" style="margin-bottom: 4px;">Rate Your Experience</div>
+        <p>How was your ride with the {{ booking.car.name }}?</p>
+    </div>
+
+    {% if user_review %}
+    <div class="existing-review" id="reviewCard">
+        <div class="review-meta">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="static-stars">
+                    {% if user_review.rating == 5 %}★★★★★{% endif %}
+                    {% if user_review.rating == 4 %}★★★★☆{% endif %}
+                    {% if user_review.rating == 3 %}★★★☆☆{% endif %}
+                    {% if user_review.rating == 2 %}★★☆☆☆{% endif %}
+                    {% if user_review.rating == 1 %}★☆☆☆☆{% endif %}
+                </div>
+                <span class="review-score">{{ user_review.rating }}/5</span>
+            </div>
+            
+            <button type="button" class="delete-review-btn" onclick="deleteReview('{{ user_review.id }}')" title="Delete Review">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
+        <div class="review-text">
+            {{ user_review.comment }}
+        </div>
+    </div>
+
+    {% else %}
+    <form id="reviewForm" action="{% url 'submit_review' booking.id %}" method="POST">
+        {% csrf_token %}
+        
+        <label class="form-label" style="text-align:center;">Select Rating</label>
+        <div class="star-rating">
+            <input type="radio" id="star5" name="rating" value="5" required /><label for="star5" title="Excellent">★</label>
+            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="Good">★</label>
+            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="Average">★</label>
+            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="Poor">★</label>
+            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="Very Poor">★</label>
+        </div>
+
+        <div class="review-form-group">
+            <label class="form-label">Write a review</label>
+            <textarea name="comment" class="review-box" placeholder="Tell us about the car condition, performance, or owner..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-review-btn">Submit Review</button>
+    </form>
+    {% endif %}
+</div>
+
+
+{% elif booking.status == "BOOKED" and booking.want_driver %}
+
+<!-- 💬 CHAT SECTION -->
+<div class="card">
+
+    <div class="section-title">Chat with Driver</div>
+
+    <div class="chat-box">
+
+        <div class="chat-body">
+            {% for msg in chatmessages %}
+                {% if msg.sender_type == "user" %}
+      <!-- USER MESSAGE (RIGHT) -->
+      <div class="chat-message sent">
+        {{ msg.message }}
+      </div>
+    {% else %}
+      <!-- DRIVER MESSAGE (LEFT) -->
+      <div class="chat-message received">
+        {{ msg.message }}
+      </div>
+                {% endif %}
+            {% empty %}
+                <p>No messages yet.</p>
+            {% endfor %}
+        </div>
+
+        <form method="post" action="{% url 'chat_view' booking.id %}" class="chat-input">
+            {% csrf_token %}
+            <input type="text" name="message" placeholder="Type message..." required>
+            <button type="submit">Send</button>
+        </form>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+</div>
+
+<form style="display:none">{% csrf_token %}</form>
+
+<script>
+    // 1. AJAX DELETE FUNCTION
+    async function deleteReview(reviewId) {
+        // Confirmation Popup
+        const result = await Swal.fire({
+            title: 'Delete Review?',
+            text: "You can write a new one afterwards.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#1f2937',
+            confirmButtonText: 'Yes, delete it'
+        });
+
+        if (!result.isConfirmed) return;
+
+        // Get CSRF Token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        try {
+            const response = await fetch(`/delete-review/${reviewId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: 'Your review has been removed.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                // Reload page to show the form again
+                window.location.reload(); 
+            } else {
+                Swal.fire('Error', 'Could not delete review.', 'error');
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire('Error', 'Network error occurred.', 'error');
+        }
+    }
+
+    // 2. PREVENT DOUBLE SUBMISSION
+    const reviewForm = document.getElementById('reviewForm');
+    if(reviewForm) {
+        reviewForm.addEventListener('submit', function(e) {
+            const btn = this.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+            btn.style.opacity = '0.7';
+        });
+    }
+
+    // 3. DISPLAY DJANGO MESSAGES (Success Alerts)
+    document.addEventListener("DOMContentLoaded", function() {
+        // Use a hidden input or data attribute to pass messages if available to avoid JS syntax errors
+        // Or simply wrap strictly in Django blocks
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    icon: "{{ message.tags|default:'info' }}", // Safe string for JS
+                    title: "{{ message.tags|title }}!",
+                    text: "{{ message }}",
+                    confirmButtonColor: '#111827',
+                    timer: 3000
+                });
+            {% endfor %}
+        {% endif %}
+    });
+</script>
+
+</body>
+</html>

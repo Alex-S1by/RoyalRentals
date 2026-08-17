@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Owner Dashboard | RoyalRentals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-soft: #eef2ff;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #f1f5f9;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Plus Jakarta Sans", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* LAYOUT */
+        .dashboard {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: #fff;
+            border-right: 1px solid var(--border);
+            padding: 32px 20px;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .brand {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .owner-card {
+            background: var(--primary-soft);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(79, 70, 229, 0.1);
+        }
+
+        .owner-card h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .owner-card p {
+            margin: 8px 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav a.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        }
+
+        .nav a:hover:not(.active) {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .logout { margin-top: auto; }
+        .logout a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            color: var(--danger);
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .logout a:hover { background: #fee2e2; }
+
+        /* MAIN CONTENT */
+        .main { padding: 40px; }
+        .header { margin-bottom: 32px; }
+        .header h2 { font-size: 30px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+
+        /* SECTIONS */
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* KPI CARDS */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 28px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 12px; }
+        .card .value { font-size: 32px; font-weight: 800; color: var(--text-main); }
+
+        /* WRAPPERS & TABLES */
+        .content-box {
+            background: #fff;
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .content-header h3 { margin: 0; font-size: 20px; font-weight: 800; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 13px; color: var(--text-muted); padding: 18px; border-bottom: 1px solid var(--border); background: #fafafa; }
+        td { padding: 18px; font-size: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        
+        /* PILLS & BADGES */
+        .pill { padding: 6px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; display: inline-block; }
+        .pill-success { background: #dcfce7; color: #15803d; }
+        .pill-warning { background: #fef3c7; color: #b45309; }
+        .pill-danger { background: #fee2e2; color: #b91c1c; }
+        .pill-info { background: #e0f2fe; color: #0369a1; }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
+        .btn-outline-danger { background: #fff; border: 1px solid var(--danger); color: var(--danger); }
+        .btn-outline-danger:hover { background: var(--danger); color: #fff; }
+        .btn-view { background: #f1f5f9; color: var(--text-main); }
+        .btn-view:hover { background: var(--text-main); color: #fff; }
+
+        /* REVIEWS */
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .review-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .star-row { color: #fbbf24; font-size: 14px; letter-spacing: 2px; }
+        .review-comment { font-size: 14px; line-height: 1.6; color: var(--text-muted); font-style: italic; background: #f8fafc; padding: 16px; border-radius: 12px; }
+
+        /* CHART BOX */
+        .chart-box { margin-top: 40px; background: #fff; padding: 30px; border-radius: 24px; border: 1px solid var(--border); }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="brand">
+               RoyalRentals
+            </div>
+
+            <div class="owner-card">
+                <h4>Owner: {{ owner.name }}</h4>
+                <p><i class="fa-solid fa-phone"></i> {{ owner.phone }}</p>
+                <p><i class="fa-solid fa-envelope"></i> {{ owner.email }}</p>
+            </div>
+
+            <nav class="nav">
+                <a class="active" onclick="showSection('Owner-Dashboard', this)">
+                    <i class="fa-solid fa-house"></i> Overview
+                </a>
+                <a onclick="showSection('cars', this)">
+                    <i class="fa-solid fa-car"></i> My Cars
+                </a>
+                <a onclick="showSection('bookings', this)">
+                    <i class="fa-solid fa-calendar-check"></i> Bookings
+                </a>
+                <a onclick="showSection('earnings', this)">
+                    <i class="fa-solid fa-wallet"></i> Earnings
+                </a>
+                <a onclick="showSection('reviews', this)">
+                    <i class="fa-solid fa-star"></i> Reviews
+                </a>
+            </nav>
+
+            <div class="logout">
+                <a href="{% url 'logout' %}">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="header">
+                <h2 id="pageTitle">Dashboard Overview</h2>
+            </div>
+
+            <section id="Owner-Dashboard" class="section active">
+                <div class="cards">
+                    <div class="card">
+                        <h3>Total Fleet</h3>
+                        <div class="value">{{ total_cars }}</div>
+                    </div>
+                    <div class="card">
+                        <h3>Total Bookings</h3>
+                        <div class="value">{{ total_bookings }}</div>
+                    </div>
+                    <div class="card" style="border-bottom: 4px solid var(--primary);">
+                        <h3>Total Earnings</h3>
+                        <div class="value">₹ {{ total_earnings }}</div>
+                    </div>
+                </div>
+
+                <div class="chart-box">
+                    <h3 style="margin-top:0;">Earnings Growth</h3>
+                    <canvas id="bookingEarningsChart"></canvas>
+                </div>
+            </section>
+
+            <section id="cars" class="section">
+                <div class="content-box">
+                    <div class="content-header">
+                        <h3>My Fleet Management</h3>
+                        <a href="{% url 'add_car' %}" class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i> Add New Car
+                        </a>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Vehicle Name</th>
+                                    <th>Location</th>
+                                    <th>Price /hr</th>
+                                    <th>Status</th>
+                                    <th>Stats</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for car in cars %}
+                                <tr>
+                                    <td style="font-weight: 800;">{{ car.name }}</td>
+                                    <td>{{ car.place }}</td>
+                                    <td>₹ {{ car.price_per_hour }}</td>
+                                    <td>
+                                        {% if car.available %}
+                                        <span class="pill pill-success">Available</span>
+                                        {% else %}
+                                        <span class="pill pill-danger">Disabled</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="pill pill-info">{{ car.booking_count }} Trips</span>
+                                    </td>
+                                    <td>
+                                        <div style="display:flex; gap:8px;">
+                                            <a href="{% url 'owner_car_detail' car.id %}" class="btn btn-view">Manage</a>
+                                            <a href="{% url 'edit_car' car.id %}" class="btn btn-view"><i class="fa-solid fa-pen"></i></a>
+                                            <form method="post" action="{% url 'disable_car' car.id %}" onsubmit="return confirm('Change car visibility?');">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn {% if car.available %}btn-outline-danger{% else %}btn-primary{% endif %}">
+                                                    {% if car.available %}Disable{% else %}Enable{% endif %}
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="6" style="text-align:center; padding:40px;">No vehicles found.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="bookings" class="section">
+                <div class="content-box">
+                    <h3>All Bookings</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Car</th>
+                                <th>Pickup Date</th>
+                                <th>Drop Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td style="font-weight:700;">{{ booking.car.name }}</td>
+                                <td>{{ booking.pickup_datetime|date:"d M Y, h:i A" }}</td>
+                                <td>{{ booking.drop_datetime|date:"d M Y, h:i A" }}</td>
+                                <td>
+                                    {% if booking.status == "BOOKED" %}<span class="pill pill-warning">BOOKED</span>
+                                    {% elif booking.status == "Running" %}<span class="pill pill-success">Running</span>
+                                    {% elif booking.status == "COMPLETED" %}<span class="pill pill-success">COMPLETED</span>
+                                     {% elif booking.status == "COMPLETED" %}<span class="pill pill-success">COMPLETED</span>
+                                     {% elif booking.status == "Pending" and booking.driver_id == NULL %}<span class="pill pill-info">Driver Not Assigned</span>
+                                     {% elif booking.status == "Pending" %}<span class="pill pill-info">Pending</span>
+                                     {% elif booking.status == "Ready for Pickup" %}<span class="pill pill-info">Ready for Pickup</span>
+                                     {% else %}<span class="pill pill-danger">{{ booking.status }}</span>{% endif %}
+                                    
+                                </td>
+                                <td>
+                                    <div style="display:flex; align-items:center; gap:10px;">
+                                        <a href="{% url 'owner_order_detail' booking.id %}" class="btn btn-view">View</a>
+                                        <a href="{% url 'owner_car_detail' booking.car.id %}" class="btn btn-view">Manage</a>
+                                        {% if booking.status == "BOOKED" %}
+                                        <form method="post" action="{% url 'owner_cancel_booking' booking.id %}">
+                                            {% csrf_token %}<button class="btn btn-outline-danger">Cancel</button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="earnings" class="section">
+                <div class="cards">
+                    <div class="card"><h3>Completed Revenue</h3><div class="value">₹ {{ completed_revenue }}</div></div>
+                    <div class="card"><h3>Upcoming Revenue</h3><div class="value">₹ {{ upcoming_revenue }}</div></div>
+                    <div class="card"><h3>Cancelled Revenue</h3><div class="value">₹ {{ cancelled_revenue }}</div></div>
+                </div>
+                
+                <div class="content-box">
+                    <h3>Recent Transactions</h3>
+                    <table>
+                        <thead><tr><th>Car</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.car.name }}</td>
+                                <td style="font-weight:800;">₹ {{ booking.total_price }}</td>
+                                <td><span class="pill {% if booking.status == 'BOOKED' %}pill-info{% elif booking.status == 'COMPLETED' %}pill-success{% else %}pill-danger{% endif %}">{{ booking.status }}</span></td>
+                                <td><a href="{% url 'owner_order_detail' booking.id %}" class="btn btn-view">View Details</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="reviews" class="section">
+                <div class="reviews-grid">
+                    {% for review in reviews %}
+                    <div class="review-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <strong style="font-size:16px;">{{ review.booking.car.name }}</strong>
+                            <span style="font-size:12px; color:var(--text-muted);">{{ review.created_at|date:"d M Y" }}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700;">
+                            <i class="fa-solid fa-circle-user" style="color:#cbd5e1;"></i> {{ review.booking.user.username }}
+                        </div>
+                        <div class="star-row">
+                            {% if review.rating >= 1 %}★{% endif %}{% if review.rating >= 2 %}★{% endif %}{% if review.rating >= 3 %}★{% endif %}{% if review.rating >= 4 %}★{% endif %}{% if review.rating >= 5 %}★{% endif %}
+                        </div>
+                        <div class="review-comment">"{{ review.comment }}"</div>
+                        <a href="{% url 'owner_order_detail' review.booking.id %}" class="btn btn-view" style="width:100%; justify-content:center;">View Linked Order</a>
+                    </div>
+                    {% empty %}
+                    <div style="text-align:center; padding:100px; grid-column: 1/-1;">No reviews found.</div>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function showSection(id, el) {
+            document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
+            document.querySelectorAll(".nav a").forEach(a => a.classList.remove("active"));
+            el.classList.add("active");
+            document.getElementById("pageTitle").innerText = el.innerText;
+        }
+
+        // Chart.js Logic
+        const ctx = document.getElementById('bookingEarningsChart');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ booking_labels|safe }},
+                datasets: [{
+                    label: 'Earnings (₹)',
+                    data: {{ earnings_data|safe }},
+                    borderColor: '#4f46e5',
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#4f46e5',
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

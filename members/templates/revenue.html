@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Revenue | Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<style>
+:root{
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --success:#16a34a;
+  --danger:#dc2626;
+  --dark:#111827;
+  --muted:#6b7280;
+}
+
+*{box-sizing:border-box;font-family:'Inter',sans-serif}
+body{margin:0;background:var(--bg)}
+
+.wrapper{
+  max-width:1200px;
+  margin:auto;
+  padding:30px 20px 60px;
+}
+
+/* ---------- HEADER ---------- */
+.header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:26px;
+}
+
+.back-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid var(--border);
+  color:var(--dark);
+  font-size:14px;
+  font-weight:600;
+  text-decoration:none;
+}
+
+.back-btn:hover{
+  background:#f9fafb;
+  transform:translateX(-2px);
+}
+
+.header h1{
+  font-size:26px;
+  font-weight:800;
+}
+
+/* ---------- STATS ---------- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
+  margin-bottom:30px;
+}
+
+.stat-card{
+  background:var(--card);
+  border-radius:18px;
+  padding:22px;
+  border:1px solid var(--border);
+}
+
+.stat-title{
+  font-size:14px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.stat-value{
+  font-size:28px;
+  font-weight:800;
+}
+
+.success{color:var(--success)}
+.danger{color:var(--danger)}
+
+/* ---------- TABLE ---------- */
+.card{
+  background:var(--card);
+  border-radius:18px;
+  border:1px solid var(--border);
+  overflow:hidden;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th, td{
+  padding:16px;
+  text-align:left;
+  font-size:14px;
+  border-bottom:1px solid var(--border);
+}
+
+th{
+  background:#f9fafb;
+  font-weight:800;
+}
+
+tbody tr:hover{
+  background:#f9fafb;
+}
+
+.muted{color:var(--muted)}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <a href="{% url 'admin_dashboard' %}" class="back-btn">
+      <i class="fa-solid fa-arrow-left"></i> Back
+    </a>
+    <h1>💰 Revenue Overview</h1>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-title">Total Revenue (Completed)</div>
+      <div class="stat-value success">₹ {{ total_revenue }}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-title">Completed Orders Revenue</div>
+      <div class="stat-value success">₹ {{ completed_revenue }}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-title">Cancelled Orders Value</div>
+      <div class="stat-value danger">₹ {{ cancelled_amount }}</div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Car</th>
+          <th>Trip</th>
+          <th>Completed At</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in completed_bookings %}
+        <tr>
+          <td>#{{ booking.id }}</td>
+          <td>{{ booking.userid.username }}</td>
+          <td>{{ booking.car.name }}</td>
+          <td>
+            {{ booking.pickup_location }} → {{ booking.drop_location }}
+          </td>
+          <td>
+            {{ booking.drop_datetime|date:"d M Y, h:i A" }}
+          </td>
+          <td class="success">
+            ₹ {{ booking.total_price }}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="muted" style="text-align:center;padding:30px">
+            No completed orders yet
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>
