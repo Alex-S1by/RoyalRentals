@@ -130,7 +130,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+       "ENGINE": "django.db.backends.sqlite3",
         'NAME': 'car_rental_db',
         'USER': 'root',
         'PASSWORD': 'root',
